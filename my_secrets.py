@@ -1,1 +1,0 @@
-OPENAI_API_KEY = "my openai api key :("
