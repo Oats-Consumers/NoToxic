@@ -3,8 +3,8 @@ from openai import OpenAI
 from my_secrets import OPENAI_API_KEY
 
 # Config
-UNLABELED_PATH = "unlabeled_dataset.jsonl"
-LABELED_PATH = "labeled_dataset.jsonl"
+UNLABELED_PATH = "datasets/unlabeled_dataset.jsonl"
+LABELED_PATH = "datasets/labeled_dataset.jsonl"
 NUM_ENTRIES = 150  # Adjust this as needed
 MODEL = "gpt-4o"
 
