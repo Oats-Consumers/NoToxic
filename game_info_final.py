@@ -1,7 +1,11 @@
 import requests
 import json
 import time
+import re
 from my_secrets import OPENDOTA_API_KEY
+
+# Precompiled regex to detect private-use Unicode (e.g., emojis like \ue128)
+PRIVATE_USE_REGEX = re.compile(r'[\uE000-\uF8FF]')
 
 def fetch_match_data(match_id):
     url = f"https://api.opendota.com/api/matches/{match_id}?api_key={OPENDOTA_API_KEY}"
@@ -39,6 +43,11 @@ def load_chatwheel_data(json_path="chat_wheel.json"):
 def normalize_message_text(key, chatwheel):
     if not isinstance(key, str):
         return key
+
+    # Filter out messages with emojis or private-use characters
+    if PRIVATE_USE_REGEX.search(key):
+        return None  # Considered invalid later
+
     if key.isdigit() and key in chatwheel:
         entry = chatwheel[key]
         if "message" in entry:
@@ -47,14 +56,20 @@ def normalize_message_text(key, chatwheel):
         elif "image" in entry:
             image_name = entry["image"].split("/")[-1].replace("_", " ").replace(".png", "")
             return f"<CHAT_WHEEL> {image_name} </CHAT_WHEEL>"
+
     return key
 
 def is_valid_message(msg, chatwheel):
     key = msg.get("key")
     if not isinstance(key, str):
         return False
+
+    if PRIVATE_USE_REGEX.search(key):
+        return False  # Exclude emoji/unicode-like content
+
     if not key.isdigit():
         return True
+
     return key in chatwheel
 
 def is_chatwheel_message(msg, chatwheel):
