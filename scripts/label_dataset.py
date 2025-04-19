@@ -5,7 +5,7 @@ from my_secrets import OPENAI_API_KEY
 # Config
 UNLABELED_PATH = "datasets/unlabeled_dataset.jsonl"
 LABELED_PATH = "datasets/labeled_dataset.jsonl"
-NUM_ENTRIES = 150  # Adjust this as needed
+NUM_ENTRIES = 1000  # Adjust this as needed
 MODEL = "gpt-4o"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
