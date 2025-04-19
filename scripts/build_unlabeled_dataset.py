@@ -9,8 +9,20 @@ from utils.game_info_final import (
 )
 
 OUTPUT_FILE = "datasets/unlabeled_dataset.jsonl"
-MAX_MESSAGES = 150  # Approximate target message count
-MATCH_BUFFER = 15   # Extra matches to fetch in case some have no valid messages
+LAST_ID_FILE = "datasets/last_seen_match_id.txt"
+MAX_MESSAGES = 1000  # Target message count
+MATCH_BUFFER = 100   # Fetch enough matches to be safe
+
+def load_last_seen_id():
+    try:
+        with open(LAST_ID_FILE, "r") as f:
+            return int(f.read().strip())
+    except FileNotFoundError:
+        return None
+
+def save_last_seen_id(match_id):
+    with open(LAST_ID_FILE, "w") as f:
+        f.write(str(match_id))
 
 def collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data):
     match_data = fetch_match_data(match_id)
@@ -47,15 +59,27 @@ if __name__ == "__main__":
     hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
     chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
 
-    print("Fetching valid match IDs...")
-    match_ids = fetch_valid_ids(target_count=MATCH_BUFFER)
-
     dataset = []
-    for match_id in match_ids:
-        if len(dataset) >= MAX_MESSAGES:
+    last_seen_id = load_last_seen_id()
+    BATCH_SIZE = 10
+
+    print(f"🔄 Collecting up to {MAX_MESSAGES} messages...")
+
+    while len(dataset) < MAX_MESSAGES:
+        print(f"\n📥 Fetching next batch of match IDs (after {last_seen_id})...")
+        match_ids, last_seen_id = fetch_valid_ids(target_count=BATCH_SIZE, after_match_id=last_seen_id)
+
+        if not match_ids:
+            print("⚠️ No more match IDs to process.")
             break
-        contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
-        dataset.extend(contexts)
+
+        for match_id in match_ids:
+            if len(dataset) >= MAX_MESSAGES:
+                break
+            contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
+            dataset.extend(contexts)
+
+        save_last_seen_id(last_seen_id)
 
     dataset = dataset[:MAX_MESSAGES]
     print(f"\n💾 Saving {len(dataset)} messages to {OUTPUT_FILE}...")

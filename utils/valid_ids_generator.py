@@ -8,21 +8,15 @@ DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11 ]
 
 HEADERS = {"Authorization": f"Bearer {OPENDOTA_API_KEY}"} if OPENDOTA_API_KEY else {}
 
-def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2):
+def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2, after_match_id=None):
     if valid_regions is None:
         valid_regions = DEFAULT_ENGLISH_REGIONS
 
     match_ids = []
-    # last_match_id = None
-    last_match_id = 8252323701
-
-    print(f"Searching for {target_count} matches from regions: {valid_regions}")
+    last_match_id = after_match_id or 8252323701
 
     while len(match_ids) < target_count:
-        params = {}
-        if last_match_id:
-            params["less_than_match_id"] = last_match_id
-
+        params = {"less_than_match_id": last_match_id}
         try:
             response = requests.get(BASE_URL, params=params)
             response.raise_for_status()
@@ -63,8 +57,7 @@ def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2):
         last_match_id = public_matches[-1].get("match_id")
         time.sleep(delay)
 
-    print(f"\n✅ Done. Collected {len(match_ids)} valid match IDs.")
-    return match_ids
+    return match_ids, last_match_id
 
 if __name__ == "__main__":
     desired_count = int(input("How many match IDs would you like? "))
