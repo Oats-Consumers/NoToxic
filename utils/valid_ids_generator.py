@@ -2,7 +2,7 @@ import requests
 import time
 from my_secrets import OPENDOTA_API_KEY  # Optional if you're rate-limited
 
-BASE_URL = "https://api.opendota.com/api/publicMatches"
+BASE_URL = "https://api.opendota.com/api/parsedMatches"
 MATCH_DETAIL_URL = "https://api.opendota.com/api/matches/{}"
 DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11 ]
 
