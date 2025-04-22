@@ -1,0 +1,141 @@
+import csv
+import json
+
+
+def interpret_advantage(time, gold, xp):
+    (minutes, _) = time.split(":")
+    min_mark = int(minutes)
+
+    # threshold_gold based on game phase
+    def describe(val, threshold_gold):
+        abs_val = abs(val)
+        if abs_val < threshold_gold[0]:
+            return f"even with the Dire"
+        elif abs_val < threshold_gold[1]:
+            return "slightly ahead" if val > 0 else "slightly behind"
+        elif abs_val < threshold_gold[2]:
+            return "ahead" if val > 0 else "behind"
+        else:
+            return "dominating" if val > 0 else "being stomped"
+
+    if min_mark < 10:
+        threshold_gold = (500, 1500, 3000)
+    elif min_mark < 20:
+        threshold_gold = (1500, 3000, 7000)
+    elif min_mark < 30:
+        threshold_gold = (3000, 7000, 10000)
+    elif min_mark < 40:
+        threshold_gold = (7000, 10000, 200000)
+    elif min_mark < 50:
+        threshold_gold = (10000, 200000, 300000)
+    else:
+        threshold_gold = (200000, 300000, 400000)
+
+    if min_mark < 10:
+        xp_threshold = (400, 800, 1600)
+    elif min_mark < 20:
+        xp_threshold = (1000, 2000, 4000)
+    elif min_mark < 30:
+        xp_threshold = (2000, 4000, 7000)
+    else:
+        xp_threshold = (3000, 7000, 15000)
+
+    gold_adv = describe(gold, threshold_gold)
+    xp_adv = describe(xp, xp_threshold)
+
+
+    winning_gold = f" the Radiant are {gold_adv} in gold"
+    winning_exp = f" and the Radiant are {xp_adv} in xp."
+
+    return f"At {time}" + winning_gold + winning_exp
+
+def format_kills(kills_dict, passive="has", active="killed"):
+    if not kills_dict:
+        return f"{passive} has not {active} any heroes yet."
+    entries = [f"{hero} {count} time(s)" for hero, count in kills_dict.items()]
+    return f"{passive} {active} " + ", ".join(entries) + "."
+
+def format_chat_as_story(chat_list, speaker=None):
+    story_lines = []
+    for line in chat_list:
+        try:
+            name_team, message = line.split(":", 1)
+            hero, team = name_team.strip().split(" (")
+            team = team.strip(")")
+            prefix = f"{hero} from the {team} said EARLIER"
+            story_lines.append(f"{prefix}: \"{message.strip()}\"")
+        except ValueError:
+            # fallback for malformed messages
+            story_lines.append(f"A player said: \"{line}\"")
+    return "\n".join(story_lines)
+
+def format_message_as_statement(hero_name, team, msg):
+    return f'{hero_name} from the {team} NOW says: "{msg}"'
+
+def create_joined_input_text(entry):
+    context = "\n" + format_chat_as_story(entry["previous_messages"])
+    game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
+    kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
+    deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
+    msg = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
+
+    return f"[CONTEXT]\n{context}\n\n[GAME STATE]\n{game_state}\n\n[{entry['hero_name'].upper()}'S STATUS]\n{kills} {deaths}\n\n[MESSAGE]\n{msg}"
+
+def preprocess_joined_dataset(input_file, output_file):
+    processed = []
+
+    with open(input_file, "r") as f:
+        for line in f:
+            entry = json.loads(line.strip())
+            input_text = create_joined_input_text(entry)
+            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
+            processed.append({
+                "input_text": input_text,
+                "label": label
+            })
+
+    with open(output_file, "w", newline="", encoding="utf-8") as csvfile:
+        fieldnames = ["input_text", "label"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in processed:
+            writer.writerow(row)
+
+    print(f"Processed {len(processed)} entries and saved to {output_file}")
+
+
+def preprocess_split_dataset(input_file, output_file):
+    processed = []
+
+    with open(input_file, "r") as f:
+        for line in f:
+            entry = json.loads(line.strip())
+            context = format_chat_as_story(entry["previous_messages"])
+            game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
+            kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
+            deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
+            extra_info = f"{game_state}\n{kills} {deaths}"
+            message = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
+
+            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
+            full_context = f"[CONTEXT]\n{context}\n\n[GAME STATE]\n{extra_info}"
+            processed.append({
+                "context": full_context,
+                "message": message,
+                "label": label
+            })
+
+    # Save to CSV
+    with open(output_file, "w", newline="", encoding="utf-8") as csvfile:
+        fieldnames = ["context", "message", "label"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in processed:
+            writer.writerow(row)
+
+    print(f"Processed {len(processed)} entries and saved to {output_file}")
+
+
+# Example usage:
+preprocess_joined_dataset("/Users/joses/Documentos/Spring 2025/NoToxic/datasets/labeled_dataset.jsonl", "/Users/joses/Documentos/Spring 2025/NoToxic/datasets/processed_joined_toxicity_data.csv")
+preprocess_split_dataset("/Users/joses/Documentos/Spring 2025/NoToxic/datasets/labeled_dataset.jsonl", "/Users/joses/Documentos/Spring 2025/NoToxic/datasets/processed_split_toxicity_data.csv")
