@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import requests
 import json
 import time
@@ -6,6 +9,7 @@ from my_secrets import OPENDOTA_API_KEY
 
 # Precompiled regex to detect private-use Unicode (e.g., emojis like \ue128)
 PRIVATE_USE_REGEX = re.compile(r'[\uE000-\uF8FF]')
+LATIN_CHAR_RE = re.compile(r'^[\x00-\x7F]+$')
 
 def fetch_match_data(match_id):
     url = f"https://api.opendota.com/api/matches/{match_id}?api_key={OPENDOTA_API_KEY}"
@@ -64,13 +68,20 @@ def is_valid_message(msg, chatwheel):
     if not isinstance(key, str):
         return False
 
+    # Exclude emoji/unicode
     if PRIVATE_USE_REGEX.search(key):
-        return False  # Exclude emoji/unicode-like content
+        return False
 
-    if not key.isdigit():
-        return True
+    # Exclude chat wheel IDs unless recognized
+    if key.isdigit():
+        return key in chatwheel
 
-    return key in chatwheel
+    # Only allow pure ASCII (no non-English alphabets)
+    if not LATIN_CHAR_RE.fullmatch(key.strip()):
+        return False
+
+    return True
+
 
 def is_chatwheel_message(msg, chatwheel):
     key = msg.get("key")
