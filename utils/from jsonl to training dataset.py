@@ -136,6 +136,6 @@ def preprocess_split_dataset(input_file, output_file):
     print(f"Processed {len(processed)} entries and saved to {output_file}")
 
 
-# Example usage:
-preprocess_joined_dataset("/Users/joses/Documentos/Spring 2025/NoToxic/datasets/labeled_dataset.jsonl", "/Users/joses/Documentos/Spring 2025/NoToxic/datasets/processed_joined_toxicity_data.csv")
-preprocess_split_dataset("/Users/joses/Documentos/Spring 2025/NoToxic/datasets/labeled_dataset.jsonl", "/Users/joses/Documentos/Spring 2025/NoToxic/datasets/processed_split_toxicity_data.csv")
+if __name__ == "__main__":
+    preprocess_joined_dataset("datasets/labeled_dataset.jsonl", "datasets/processed_joined_toxicity_data.csv")
+    preprocess_split_dataset("datasets/labeled_dataset.jsonl", "datasets/processed_split_toxicity_data.csv")
