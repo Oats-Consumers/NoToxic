@@ -1,0 +1,38 @@
+{
+  "bert-base-uncased-joined": {
+    "f1": 0.7733333333333333,
+    "precision": 0.7699115044247787
+  },
+  "bert-base-uncased-split": {
+    "f1": 0.7870370370370371,
+    "precision": 0.8173076923076923
+  },
+  "bert-base-uncased-message_only": {
+    "f1": 0.7420814479638009,
+    "precision": 0.7522935779816514
+  },
+  "bert-large-uncased-joined": {
+    "f1": 0.7888446215139442,
+    "precision": 0.7734375
+  },
+  "bert-large-uncased-split": {
+    "f1": 0.7358490566037735,
+    "precision": 0.78
+  },
+  "bert-large-uncased-message_only": {
+    "f1": 0.0,
+    "precision": 0.0
+  },
+  "s-nlp-roberta-toxicity-classifier-joined": {
+    "f1": 0.7410071942446043,
+    "precision": 0.6688311688311688
+  },
+  "s-nlp-roberta-toxicity-classifier-split": {
+    "f1": 0.7908745247148289,
+    "precision": 0.8387096774193549
+  },
+  "s-nlp-roberta-toxicity-classifier-message_only": {
+    "f1": 0.7394366197183099,
+    "precision": 0.7241379310344828
+  }
+}
