@@ -3,7 +3,7 @@ import json
 import time
 import os
 from utils.valid_ids_generator import fetch_valid_ids
-from utils.game_info_final import (
+from utils.game_info import (
     fetch_match_data, request_reparse, load_hero_data, load_chatwheel_data,
     is_valid_message, is_chatwheel_message, get_context_for_chat_message
 )
