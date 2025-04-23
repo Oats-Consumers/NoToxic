@@ -5,7 +5,10 @@ import requests
 import json
 import time
 import re
+import atexit
 from my_secrets import OPENDOTA_API_KEY
+from utils.language_check import is_english, save_cache
+atexit.register(save_cache)
 
 # Precompiled regex to detect private-use Unicode (e.g., emojis like \ue128)
 PRIVATE_USE_REGEX = re.compile(r'[\uE000-\uF8FF]')
@@ -78,6 +81,11 @@ def is_valid_message(msg, chatwheel):
 
     # Only allow pure ASCII (no non-English alphabets)
     if not LATIN_CHAR_RE.fullmatch(key.strip()):
+        return False
+
+    # Filter out non-English messages using GPT + cache
+    if not is_english(key.strip()):
+        print(f"🌐 Skipping non-English message: {key}")
         return False
 
     return True
