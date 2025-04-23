@@ -1,6 +1,13 @@
 import csv
 import json
+import argparse
+import os
 
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "datasets", "labeled_dataset.jsonl")
+DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "datasets", "processed_split.csv")
 
 def interpret_advantage(time, gold, xp):
     (minutes, _) = time.split(":")
@@ -72,62 +79,37 @@ def format_chat_as_story(chat_list, speaker=None):
 def format_message_as_statement(hero_name, team, msg):
     return f'{hero_name} from the {team} NOW says: "{msg}"'
 
-def create_joined_input_text(entry):
-    context = "\n" + format_chat_as_story(entry["previous_messages"])
-    game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
-    kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
-    deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
-    msg = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
-
-    return f"[CONTEXT]\n{context}\n\n[GAME STATE]\n{game_state}\n\n[{entry['hero_name'].upper()}'S STATUS]\n{kills} {deaths}\n\n[MESSAGE]\n{msg}"
-
-def preprocess_joined_dataset(input_file, output_file):
+def process_jsonl_to_csv(input_file, output_file, labeling = True):
     processed = []
 
     with open(input_file, "r") as f:
         for line in f:
             entry = json.loads(line.strip())
-            input_text = create_joined_input_text(entry)
-            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
-            processed.append({
-                "input_text": input_text,
-                "label": label
-            })
-
-    with open(output_file, "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["input_text", "label"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in processed:
-            writer.writerow(row)
-
-    print(f"Processed {len(processed)} entries and saved to {output_file}")
-
-
-def preprocess_split_dataset(input_file, output_file):
-    processed = []
-
-    with open(input_file, "r") as f:
-        for line in f:
-            entry = json.loads(line.strip())
-            context = format_chat_as_story(entry["previous_messages"])
+            context = format_chat_as_story(reversed(entry["previous_messages"]))
             game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
             kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
             deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
             extra_info = f"{game_state}\n{kills} {deaths}"
             message = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
-
-            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
-            full_context = f"[CONTEXT]\n{context}\n\n[GAME STATE]\n{extra_info}"
-            processed.append({
-                "context": full_context,
-                "message": message,
-                "label": label
-            })
+            full_context = f"[GAME STATE]\n{extra_info}\n\n[CONTEXT]\n{context}\n"
+            if labeling:
+                label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
+                processed.append({
+                    "message": message,
+                    "context": full_context,
+                    "label": label
+                })
+            else:
+                processed.append({
+                    "message": message,
+                    "context": full_context
+                })
 
     # Save to CSV
     with open(output_file, "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["context", "message", "label"]
+        fieldnames = ["message", "context"]
+        if labeling:
+            fieldnames += ["label"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in processed:
@@ -136,6 +118,23 @@ def preprocess_split_dataset(input_file, output_file):
     print(f"Processed {len(processed)} entries and saved to {output_file}")
 
 
+
 if __name__ == "__main__":
-    preprocess_joined_dataset("datasets/labeled_dataset.jsonl", "datasets/processed_joined_toxicity_data.csv")
-    preprocess_split_dataset("datasets/labeled_dataset.jsonl", "datasets/processed_split_toxicity_data.csv")
+    parser = argparse.ArgumentParser(description="Preprocess dataset into split format.")
+    parser.add_argument(
+        "-i", "--input",
+        type=str,
+        default=DEFAULT_INPUT,
+        help="Input JSONL file path (default: datasets/labeled_dataset.jsonl)"
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=str,
+        default=DEFAULT_OUTPUT,
+        help="Output CSV file path (default: datasets/processed_split.csv)"
+    )
+    args = parser.parse_args()
+    print(args.input)
+    print(args.output)
+
+    process_jsonl_to_csv(args.input, args.output)
