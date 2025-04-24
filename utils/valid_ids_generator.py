@@ -1,14 +1,12 @@
 import requests
 import time
-from my_secrets import OPENDOTA_API_KEY  # Optional if you're rate-limited
 
-BASE_URL = "https://api.opendota.com/api/parsedMatches"
-MATCH_DETAIL_URL = "https://api.opendota.com/api/matches/{}"
+from scripts import OPEN_DOTA_CLIENT
+
 DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11 ]
 
-HEADERS = {"Authorization": f"Bearer {OPENDOTA_API_KEY}"} if OPENDOTA_API_KEY else {}
-
 def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2, after_match_id=None):
+
     if valid_regions is None:
         valid_regions = DEFAULT_ENGLISH_REGIONS
 
@@ -16,11 +14,8 @@ def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2, after_match_
     last_match_id = after_match_id or 8252323701
 
     while len(match_ids) < target_count:
-        params = {"less_than_match_id": last_match_id}
         try:
-            response = requests.get(BASE_URL, params=params)
-            response.raise_for_status()
-            public_matches = response.json()
+            public_matches = OPEN_DOTA_CLIENT.get_public_matches(last_match_id)
         except requests.RequestException as e:
             print(f"Error fetching public matches: {e}")
             break
@@ -35,10 +30,7 @@ def fetch_valid_ids(target_count=10, valid_regions=None, delay=1.2, after_match_
                 continue
 
             try:
-                match_detail_resp = requests.get(MATCH_DETAIL_URL.format(match_id), headers=HEADERS)
-                match_detail_resp.raise_for_status()
-                match_detail = match_detail_resp.json()
-
+                match_detail = OPEN_DOTA_CLIENT.get_match_details(match_id)
                 region = match_detail.get("region")
                 if region in valid_regions:
                     match_ids.append(match_id)
