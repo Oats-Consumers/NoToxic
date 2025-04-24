@@ -48,11 +48,11 @@ def label_match(input_path, output_path):
             ).to(device)
 
             # Decode input_ids back to tokens
-            print("\n--- TOKENIZED MESSAGE+CONTEXT INPUT ---")
-            print("Tokens:", tokenizer.convert_ids_to_tokens(inputs['input_ids'][0]))
-            print("Decoded text:", tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True))
-            print("Attention mask:", inputs['attention_mask'][0])
-            print("Input length:", inputs['input_ids'].shape[1])
+            # print("\n--- TOKENIZED MESSAGE+CONTEXT INPUT ---")
+            # print("Tokens:", tokenizer.convert_ids_to_tokens(inputs['input_ids'][0]))
+            # print("Decoded text:", tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True))
+            # print("Attention mask:", inputs['attention_mask'][0])
+            # print("Input length:", inputs['input_ids'].shape[1])
 
             with torch.no_grad():
                 outputs = model(**inputs)

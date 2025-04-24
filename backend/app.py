@@ -5,7 +5,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scripts.build_unlabeled_dataset import collect_contexts_from_match
-from utils.game_info import load_hero_data, load_chatwheel_data
+from utils.game_info import load_hero_data, load_chatwheel_data, fetch_match_data
 from inference.match_chat_labeler import label_match
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +21,19 @@ chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
 @app.route('/get-toxic-messages', methods=['GET', 'POST'])
 def get_toxic_messages():
     match_id = request.args.get('match_id')
+    raw_match = fetch_match_data(match_id)
+    players_data = raw_match.get("players", [])
+    players_info = [
+        {
+            "player_slot": player.get("player_slot"),
+            "player_name": player.get("personaname"),
+            "hero_id": player.get("hero_id"),
+            "hero_name": hero_names.get(player.get("hero_id"), "Unknown Hero")  # Lookup heroname
+
+        }
+        for player in players_data
+    ]
+    print(players_info)
     if not match_id:
         return jsonify({"error": "No match_id provided"}), 400
     contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
@@ -39,6 +52,10 @@ def get_toxic_messages():
     # Add labels to contexts
     for i in range(len(contexts)):
         contexts[i]["label"] = messages_output[i]["label"]
+        for player in players_info:
+            if player["hero_name"] in contexts[i]["hero_name"]:
+                contexts[i]["player_name"] = player["player_name"]
+                break
     open("backend/contexts.json", "w").close()
     open("backend/messages_output.json", "w").close()
     return jsonify(contexts)
