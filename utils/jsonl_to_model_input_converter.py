@@ -83,27 +83,31 @@ def process_jsonl_to_csv(input_file, output_file, labeling = True):
     processed = []
 
     with open(input_file, "r") as f:
-        for line in f:
-            entry = json.loads(line.strip())
-            context = format_chat_as_story(reversed(entry["previous_messages"]))
-            game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
-            kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
-            deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
-            extra_info = f"{game_state}\n{kills} {deaths}"
-            message = f"[MESSAGE TO CLASSIFY]!!!\n{format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])}\n"
-            full_context = f"[GAME STATE]\n{extra_info}\n[CONTEXT]\n{context}\n"
-            if labeling:
-                label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
-                processed.append({
-                    "message": message,
-                    "context": full_context,
-                    "label": label
-                })
-            else:
-                processed.append({
-                    "message": message,
-                    "context": full_context
-                })
+        data = json.load(f)  # Load the full JSON array
+
+    for entry in data:
+        context = format_chat_as_story(reversed(entry["previous_messages"]))
+        game_state = interpret_advantage(entry["time_str"], entry["radiant_gold_adv"], entry["radiant_xp_adv"])
+        kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
+        deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
+        extra_info = f"{game_state}\n{kills} {deaths}"
+        user_message = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
+        message = f"[MESSAGE TO CLASSIFY]!!!\n{user_message}\n"
+        full_context = f"[GAME STATE]\n{extra_info}\n[CONTEXT]\n{context}\n"
+        
+        if labeling:
+            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
+            processed.append({
+                "message": message,
+                "context": full_context,
+                "label": label
+            })
+        else:
+            processed.append({
+                "message": message,
+                "context": full_context
+            })
+
 
     # Save to CSV
     with open(output_file, "w", newline="", encoding="utf-8") as csvfile:
