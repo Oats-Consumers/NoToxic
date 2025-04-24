@@ -7,7 +7,7 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "datasets", "labeled_dataset.jsonl")
-DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "datasets", "processed_split.csv")
+DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "datasets", "processed_split_toxicity_data.csv")
 
 def interpret_advantage(time, gold, xp):
     (minutes, _) = time.split(":")
@@ -90,8 +90,8 @@ def process_jsonl_to_csv(input_file, output_file, labeling = True):
             kills = format_kills(entry["killed_before_time"], passive=entry["hero_name"], active="killed")
             deaths = format_kills(entry["killed_by_before_time"], passive=entry["hero_name"], active="has been killed by")
             extra_info = f"{game_state}\n{kills} {deaths}"
-            message = format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])
-            full_context = f"[GAME STATE]\n{extra_info}\n\n[CONTEXT]\n{context}\n"
+            message = f"[MESSAGE TO CLASSIFY]!!!\n{format_message_as_statement(entry["hero_name"], entry["team"], entry["msg"])}\n"
+            full_context = f"[GAME STATE]\n{extra_info}\n[CONTEXT]\n{context}\n"
             if labeling:
                 label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
                 processed.append({
