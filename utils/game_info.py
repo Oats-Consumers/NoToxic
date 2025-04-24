@@ -155,9 +155,10 @@ def get_advantage(match_data, timestamp):
     return gold_adv, xp_adv
 
 def format_time_mmss(seconds):
-    minutes = seconds // 60
-    secs = seconds % 60
-    return f"{minutes}:{secs:02}"
+    minutes = abs(seconds) // 60
+    secs = abs(seconds) % 60
+    sign = "-" if seconds < 0 else ""
+    return f"{sign}{minutes}:{secs:02}"
 
 def get_context_for_chat_message(index, chat_log, match_data, hero_names, npc_names, npc_to_id, chatwheel):
     message = chat_log[index]
