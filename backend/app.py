@@ -1,14 +1,18 @@
-from flask import Flask, request, jsonify
-import requests
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import json
+import torch
+# Removed unused import
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from match_chat_labeler import label_match
-
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from scripts.build_unlabeled_dataset import collect_contexts_from_match
+from utils.game_info import load_hero_data, load_chatwheel_data
+from inference.match_chat_labeler import label_match
 app = Flask(__name__)
 CORS(app)
-MODEL_DIR = "../training/models/best-s-nlp-roberta-toxicity-classifier-split"
+MODEL_DIR = "best-s-nlp-roberta-toxicity-classifier-split"
 
 if not os.path.exists(MODEL_DIR):
     raise FileNotFoundError(f"Model directory not found: {MODEL_DIR}")
@@ -16,59 +20,38 @@ if not os.path.exists(MODEL_DIR):
 tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, local_files_only=True)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR, local_files_only=True)
 model.eval()
-
-def predict_toxicity(messages):
-    inputs = tokenizer(messages, padding=True, truncation=True, return_tensors="pt")
-    with torch.no_grad():
-        outputs = model(**inputs)
-        probs = torch.nn.functional.softmax(outputs.logits, dim=-1)
-        preds = torch.argmax(probs, dim=1)
-    return preds.tolist()
-
+def predict_toxicity(contexts):
+    # Save messages to a JSON file
+    with open("backend/contexts.json", "w") as json_file:
+        json.dump(contexts, json_file, indent=4)
+    label_match("backend/contexts.json", "backend/messages_output.json")
+    
+hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
+chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
 @app.route('/get-toxic-messages', methods=['GET', 'POST'])
-@app.route('/get-toxic-messages', methods=['GET'])
 def get_toxic_messages():
     match_id = request.args.get('match_id')
-
     if not match_id:
         return jsonify({"error": "No match_id provided"}), 400
+    contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
+    predict_toxicity(contexts)
+    messages_output_path = os.path.join(os.path.dirname(__file__), "messages_output.json")
+    if not os.path.exists(messages_output_path):
+        return jsonify({"error": "messages_output.json not found"}), 500
 
-    # Fetch match data from OpenDota
-    response = requests.get(f"https://api.opendota.com/api/matches/{match_id}")
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to fetch match data"}), 500
+    with open(messages_output_path, "r", encoding="utf-8") as f:
+        messages_output = [json.loads(line) for line in f]
 
-    match_data = response.json()
-    chat = match_data.get("chat", [])
+    # Ensure the lengths of contexts and messages_output match
+    if len(contexts) != len(messages_output):
+        return jsonify({"error": "Mismatch between contexts and messages_output lengths"}), 500
 
-    if not chat:
-        return jsonify({"message": "No chat messages found"}), 200
-
-    # Sort chat messages by time
-    chat_sorted = sorted(
-        [msg for msg in chat if "key" in msg and isinstance(msg["key"], str)],
-        key=lambda x: x.get("time", 0)
-    )
-
-    messages = [msg["key"] for msg in chat_sorted]
-    toxic_flags = predict_toxicity(messages)
-
-    # Package enriched message data
-    enriched_messages = [
-        {
-            "player_slot": msg.get("player_slot", "Unknown"),
-            "time": msg.get("time", 0),
-            "text": msg["key"],
-            "toxic": bool(is_toxic)
-        }
-        for msg, is_toxic in zip(chat_sorted, toxic_flags)
-    ]
-
-    return jsonify({"messages": enriched_messages})
-
+    # Add labels to contexts
+    for i in range(len(contexts)):
+        contexts[i]["label"] = messages_output[i]["label"]
+    open("backend/contexts.json", "w").close()
+    open("backend/messages_output.json", "w").close()
+    return jsonify(contexts)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-from flask import Flask, jsonify, request
