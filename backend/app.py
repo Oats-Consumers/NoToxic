@@ -2,24 +2,14 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import json
-import torch
-# Removed unused import
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from scripts.build_unlabeled_dataset import collect_contexts_from_match
 from utils.game_info import load_hero_data, load_chatwheel_data
 from inference.match_chat_labeler import label_match
 app = Flask(__name__)
 CORS(app)
-MODEL_DIR = "best-s-nlp-roberta-toxicity-classifier-split"
 
-if not os.path.exists(MODEL_DIR):
-    raise FileNotFoundError(f"Model directory not found: {MODEL_DIR}")
-
-tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, local_files_only=True)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR, local_files_only=True)
-model.eval()
 def predict_toxicity(contexts):
     # Save messages to a JSON file
     with open("backend/contexts.json", "w") as json_file:
