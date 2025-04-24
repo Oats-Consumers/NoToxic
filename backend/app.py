@@ -55,6 +55,7 @@ def get_toxic_messages():
         for player in players_info:
             if player["hero_name"] in contexts[i]["hero_name"]:
                 contexts[i]["player_name"] = player["player_name"]
+                contexts[i]["hero_id"] = player["hero_id"]
                 break
     open("backend/contexts.json", "w").close()
     open("backend/messages_output.json", "w").close()
