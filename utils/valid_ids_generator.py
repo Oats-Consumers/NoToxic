@@ -1,7 +1,7 @@
 import requests
 import time
 
-from scripts import OPEN_DOTA_CLIENT
+from clients import OPEN_DOTA_CLIENT
 
 DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11 ]
 

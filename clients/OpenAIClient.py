@@ -14,15 +14,19 @@ class OpenAIClient:
 
     __client = OpenAI(api_key=OPENAI_API_KEY)
 
+    def __chat(self, prompt):
+        response = self.__client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+        )
+        return response.choices[0].message.content
+
+
     def check_is_english_text(self, text):
         try:
             prompt = PromptBuilder.LanguageCheckPrompt().build_is_english_prompt(text)
-            response = self.__client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0,
-            )
-            result = response.choices[0].message.content.strip().lower()
+            result = self.__chat(prompt).strip().lower()
             return result.startswith("yes")
         except Exception as e:
             print(f"⚠️ Language check failed: {e}")
@@ -30,9 +34,7 @@ class OpenAIClient:
 
     def label_entry(self, entry):
         prompt = PromptBuilder.LabelDataPrompt().build_label_data_prompt(entry)
-        response = self.__client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0,
-        )
-        return response.choices[0].message.content.strip().upper()
+        try:
+            return self.__chat(prompt).strip().upper()
+        except Exception as e:
+            raise e
