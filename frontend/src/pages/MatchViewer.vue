@@ -2,26 +2,24 @@
   <v-container class="fill-height" fluid>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
-        <v-card class="pa-4" elevation="10" rounded="xl">
-          <v-card-title class="text-h5 text-center">
-            🎮 Dota 2 Match Viewer
-          </v-card-title>
-
+        <v-card class="pa-6" elevation="10" rounded="xl">
           <v-text-field
             v-model="gameId"
-            label="Enter Match ID"
-            outlined
-            dense
+            placeholder="Enter Match ID"
+            hide-details
+            variant="outlined"
+            density="comfortable"
             class="mb-4"
           />
 
           <v-btn
-            color="primary"
+            color="accent"
             block
             :loading="loading"
+            :disabled="!/^\d+$/.test(gameId.trim())"
             @click="fetchMessages"
           >
-            Get Chat Messages
+            Scan Chat
           </v-btn>
 
           <v-alert
@@ -46,15 +44,6 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-
-          <v-alert
-            v-else-if="!loading"
-            type="info"
-            class="mt-4"
-            text
-          >
-            Enter a match ID and click the button to see messages.
-          </v-alert>
         </v-card>
       </v-col>
     </v-row>
@@ -73,30 +62,35 @@ const loading = ref(false)
 const error = ref(null)
 
 const fetchMessages = async () => {
-  if (!gameId.value.trim()) return
+  const id = gameId.value.trim()
+  if (!id) return
 
   loading.value = true
   error.value = null
-  messages.value = []
 
   try {
-    const res = await axios.get(`http://127.0.0.1:5000/get-toxic-messages?match_id=${gameId.value}`)
-    
-    if (res.data.error) {
-      throw new Error(res.data.error)
+    const { data } = await axios.get(`https://api.opendota.com/api/matches/${id}`)
+
+    if (!data.match_id) {
+      throw new Error("Invalid match ID.")
     }
 
-    router.push({
-      name: 'MatchResults',
-      params: { matchId: gameId.value },
-      query: { messages: encodeURIComponent(JSON.stringify(res.data.messages)) }
-    })
+    const hasParsed = data?.od_data?.has_parsed
+
+    if (!hasParsed) {
+      throw new Error("This match has not been parsed yet. Please wait and try again later.")
+    }
+
+    // ✅ Valid and parsed — go to results
+    router.push({ name: 'MatchResults', params: { matchId: id } })
 
   } catch (err) {
-    error.value = 'Failed to fetch messages. Check the match ID or server.'
-    console.error("Fetch failed:", err)
+    error.value = err.message || 'Invalid or unavailable match ID.'
+    console.error("Validation failed:", err)
   } finally {
     loading.value = false
   }
 }
+
+
 </script>
