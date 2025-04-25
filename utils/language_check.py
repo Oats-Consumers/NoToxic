@@ -1,7 +1,6 @@
 import json
 import os
-from my_secrets import OPENAI_API_KEY
-from scripts import OPEN_AI_CLIENT
+from clients import OPEN_AI_CLIENT
 
 # Config
 MODEL = "gpt-4o"

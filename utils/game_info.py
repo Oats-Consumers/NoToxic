@@ -1,6 +1,6 @@
 import sys, os
 
-from scripts import OPEN_DOTA_CLIENT
+from clients import OPEN_DOTA_CLIENT
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 

@@ -1,13 +1,13 @@
 import json
-from openai import OpenAI
-from my_secrets import OPENAI_API_KEY
-from scripts import OPEN_AI_CLIENT
+
+
+from clients import OPEN_AI_CLIENT
 
 # Config
 UNLABELED_PATH = "datasets/unlabeled_dataset.jsonl"
 LABELED_PATH = "datasets/labeled_dataset.jsonl"
-NUM_ENTRIES = 36     # Number of entries to label
-START_INDEX = 1025      # Change this to start from a different index
+NUM_ENTRIES = 20     # Number of entries to label
+START_INDEX = 1060      # Change this to start from a different index
 
 def label_entries(entries):
     labeled = []
