@@ -7,7 +7,6 @@ import csv
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
-import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
