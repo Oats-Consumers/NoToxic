@@ -6,7 +6,6 @@ import os
 import csv
 
 import torch
-import pandas as pd
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
