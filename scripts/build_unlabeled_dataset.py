@@ -1,17 +1,16 @@
-import requests
 import json
 import time
 import os
 from utils.valid_ids_generator import fetch_valid_ids
 from utils.game_info import (
     fetch_match_data, request_reparse, load_hero_data, load_chatwheel_data,
-    is_valid_message, is_chatwheel_message, get_context_for_chat_message
+    is_valid_message, get_context_for_chat_message
 )
 
 # Config
 OUTPUT_FILE = "datasets/unlabeled_dataset.jsonl"
 LAST_ID_FILE = "datasets/last_seen_match_id.txt"
-MAX_MESSAGES = 1000  # Target total messages (existing + new)
+MAX_MESSAGES = 1082  # Target total messages (existing + new)
 BATCH_SIZE = 1
 
 def load_last_seen_id():
