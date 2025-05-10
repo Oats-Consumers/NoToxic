@@ -1,6 +1,5 @@
 import json
 import csv
-import os
 
 INPUT_PATH = "datasets/labeled_dataset.jsonl"
 OUTPUT_PATH = INPUT_PATH.replace(".jsonl", ".csv")

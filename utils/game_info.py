@@ -1,4 +1,7 @@
 import sys, os
+
+from clients import OPEN_DOTA_CLIENT
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import requests
@@ -6,7 +9,6 @@ import json
 import time
 import re
 import atexit
-from my_secrets import OPENDOTA_API_KEY
 from utils.language_check import is_english, save_cache
 atexit.register(save_cache)
 
@@ -15,19 +17,15 @@ PRIVATE_USE_REGEX = re.compile(r'[\uE000-\uF8FF]')
 LATIN_CHAR_RE = re.compile(r'^[\x00-\x7F]+$')
 
 def fetch_match_data(match_id):
-    url = f"https://api.opendota.com/api/matches/{match_id}?api_key={OPENDOTA_API_KEY}"
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
+        return OPEN_DOTA_CLIENT.get_match_details(match_id)
     except requests.RequestException as e:
         print(f"Error fetching match data: {e}")
         return None
 
 def request_reparse(match_id):
-    url = f"https://api.opendota.com/api/request/{match_id}?api_key={OPENDOTA_API_KEY}"
     try:
-        response = requests.post(url)
+        response = OPEN_DOTA_CLIENT.reparse_match(match_id)
         if response.status_code == 200:
             print(f"Reparse requested for match {match_id}. Waiting for reparse to complete...")
         else:

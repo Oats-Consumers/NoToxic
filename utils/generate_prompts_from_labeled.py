@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 LABELED_PATH = "datasets/labeled_dataset.jsonl"
 
