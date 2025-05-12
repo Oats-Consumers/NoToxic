@@ -217,9 +217,9 @@ def get_context_for_chat_message(index, chat_log, match_data, hero_names, npc_na
         "radiant_xp_adv": xp_adv,
         "is_chatwheel": is_chatwheel_message(message, chatwheel),
     }
+hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
 
 if __name__ == "__main__":
-    hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
     chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
     match_id = input("Enter Dota 2 match ID: ")
 
