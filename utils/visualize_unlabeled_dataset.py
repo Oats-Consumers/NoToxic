@@ -23,7 +23,7 @@ def pretty_print_entry(entry):
     print(f"☠️  Killed By (before msg): {killed_by if killed_by else '{}'}")
     print(f"💬 Message: {entry['msg']}")
 
-def load_dataset(file_path="datasets/unlabeled_dataset.jsonl"):
+def load_dataset(file_path="datasets/random_50_dataset.jsonl"):
     with open(file_path, "r", encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
