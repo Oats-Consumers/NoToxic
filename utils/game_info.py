@@ -24,6 +24,17 @@ def fetch_match_data(match_id):
         print(f"Error fetching match data: {e}")
         return None
 
+def fetch_recent_matches(account_id):
+    url = f"https://api.opendota.com/api/players/{account_id}/recentMatches?api_key={OPENDOTA_API_KEY}"
+    try:
+        response = requests.get(url)
+        print(response.json())
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching recent matches: {e}")
+        return None
+
 def request_reparse(match_id):
     url = f"https://api.opendota.com/api/request/{match_id}?api_key={OPENDOTA_API_KEY}"
     try:

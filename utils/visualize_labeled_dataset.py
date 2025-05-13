@@ -25,7 +25,7 @@ def pretty_print_entry(entry):
     print(f"💬 Message: {entry['msg']}")
     print(f"⚠️ Toxicity Label: {'🔥 TOXIC' if entry['toxicity'] == 'TOXIC' else '✅ NON-TOXIC'}")
 
-def load_dataset(file_path="datasets/labeled_dataset.jsonl"):
+def load_dataset(file_path="datasets/random_50_label_check_2.jsonl"):
     with open(file_path, "r", encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
