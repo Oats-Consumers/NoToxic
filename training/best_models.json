@@ -44,5 +44,23 @@
     "precision": 0.8013698630136986,
     "recall": 0.8731343283582089,
     "accuracy": 0.8296296296296296
+  },
+  "bert-base-uncased-tokenized": {
+    "f1": 0.7529411764705882,
+    "precision": 0.7933884297520661,
+    "recall": 0.7164179104477612,
+    "accuracy": 0.7666666666666667
+  },
+  "microsoft-deberta-v3-small-tokenized": {
+    "f1": 0.7242524916943521,
+    "precision": 0.6526946107784432,
+    "recall": 0.8134328358208955,
+    "accuracy": 0.6925925925925925
+  },
+  "microsoft-deberta-v3-base-tokenized": {
+    "f1": 0.7415730337078652,
+    "precision": 0.7443609022556391,
+    "recall": 0.7388059701492538,
+    "accuracy": 0.7444444444444445
   }
 }

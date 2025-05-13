@@ -66,7 +66,8 @@ def build_input_string(entry):
     msg_str = f"[MSG] {format_token(entry['hero_name'])} {entry['msg']} {format_token(entry['team'])} <SEP>"
 
     prev_strs = []
-    for msg in entry["previous_messages"]:
+    previous_messages = reversed(entry["previous_messages"])
+    for msg in previous_messages:
         hero_team, message = msg.split(":", 1)
         hero, team = hero_team.strip().split(" (")
         team = team.strip(")")
@@ -80,7 +81,7 @@ def build_input_string(entry):
 def get_label(entry):
     return 1 if entry["toxicity"].upper() == "TOXIC" else 0
 
-def process_json_to_csv(input_json_path, output_csv_path):
+def process_jsonl_to_csv(input_json_path, output_csv_path):
     processed = []
     with open(input_json_path, "r", encoding="utf-8") as f:
         for line in f:
@@ -100,4 +101,4 @@ def process_json_to_csv(input_json_path, output_csv_path):
 
 
 if __name__ == "__main__":
-    process_json_to_csv(INPUT_JSON_PATH, OUTPUT_CSV_PATH)
+    process_jsonl_to_csv(INPUT_JSON_PATH, OUTPUT_CSV_PATH)
