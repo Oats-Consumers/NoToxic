@@ -10,7 +10,7 @@ from utils.game_info import (
 # Config
 OUTPUT_FILE = "datasets/unlabeled_dataset.jsonl"
 LAST_ID_FILE = "datasets/last_seen_match_id.txt"
-MAX_MESSAGES = 1082  # Target total messages (existing + new)
+MAX_MESSAGES = 10000  # Target total messages (existing + new)
 BATCH_SIZE = 1
 
 def load_last_seen_id():
@@ -37,7 +37,7 @@ def collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chat
     if not chat_log:
         print(f"No messages for match {match_id}. Requesting reparse.")
         request_reparse(match_id)
-        for retry in range(20):
+        for retry in range(4):
             time.sleep(15)
             match_data = fetch_match_data(match_id)
             chat_log = match_data.get("chat") if match_data else []

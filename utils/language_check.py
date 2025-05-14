@@ -1,6 +1,6 @@
 import json
 import os
-from clients import OPEN_AI_CLIENT
+from clients import OPEN_AI_CLIENT, OLLAMA_CLIENT
 
 # Config
 MODEL = "gpt-4o"
@@ -18,7 +18,7 @@ def is_english(text):
     if text in language_cache:
         return language_cache[text]
 
-    is_eng = OPEN_AI_CLIENT.check_is_english_text(text)
+    is_eng = OLLAMA_CLIENT.check_is_english_text(text)
     language_cache[text] = is_eng
     return is_eng
 
