@@ -2,7 +2,7 @@ import json
 import random
 from collections import Counter
 
-LABELED_PATH = "datasets/labeled_dataset.jsonl"
+LABELED_PATH = "datasets/random_100_label_dataset.jsonl"
 
 def pretty_print_entry(entry, index=None):
     print("\n=== 🧠 Labeled Chat Message Context ===")
@@ -45,7 +45,7 @@ def review_entries(dataset):
     random.shuffle(indices)
     changes = 0
 
-    for i in range(1065, 1201):
+    for i in range(0, dataset.__len__(), 1):
         entry = dataset[i]
         pretty_print_entry(entry, index=i)
 
