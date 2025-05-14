@@ -5,7 +5,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scripts.build_unlabeled_dataset import collect_contexts_from_match
-from utils.game_info import load_hero_data, load_chatwheel_data, fetch_match_data
+from utils.game_info import load_hero_data, load_chatwheel_data, fetch_match_data, fetch_recent_matches, fetch_player
 from inference.match_chat_labeler import label_match
 app = Flask(__name__)
 CORS(app)
@@ -60,6 +60,21 @@ def get_toxic_messages():
     open("backend/contexts.json", "w").close()
     open("backend/messages_output.json", "w").close()
     return jsonify(contexts)
+
+
+def get_steam32(steam64_id):
+    steam32_id = int(steam64_id) - 76561197960265728
+    return str(steam32_id)
+
+@app.route('/player-recentmatches', methods=['GET'])
+def get_toxic_messages_player():
+    accound_id = get_steam32(request.args.get('accound_id'))
+    matches_id = fetch_recent_matches(accound_id)
+    player_info = fetch_player(accound_id)
+    if not matches_id:
+        return jsonify({"error": "No match_id provided"}), 400
+    return jsonify({"player": player_info,
+                   "matches": matches_id})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,32 @@
+Unsure:  15
+True Positive:  52
+False Positive:  4
+True Negative:  20
+False Negative:  9
+f1 score:  0.8888888888888888
+
+Unsure: 18
+True Positive:  52
+False Positive:  3
+True Negative:  18
+False Negative:  9
+f1 score:  0.896551724137931
+
+Unsure:  15
+True Positive:  53
+False Positive:  3
+True Negative:  21
+False Negative:  8
+f1 score:  0.905982905982906
+
+
+FINAL:
+Unsure:  15
+True Positive:  58
+False Positive:  3
+True Negative:  31
+False Negative:  8
+f1 score:  0.9133858267716536
+accuracy:  0.89
+precision:  0.9508196721311475
+recall:  0.8787878787878788
