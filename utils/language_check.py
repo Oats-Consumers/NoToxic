@@ -1,9 +1,8 @@
 import json
 import os
-from clients import OPEN_AI_CLIENT, OLLAMA_CLIENT
+from clients import OLLAMA_CLIENT
 
 # Config
-MODEL = "gpt-4o"
 CACHE_FILE = "datasets/language_cache.json"
 
 # Load cache from disk
