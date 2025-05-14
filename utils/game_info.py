@@ -1,6 +1,7 @@
 import sys, os
 
 from clients import OPEN_DOTA_CLIENT
+from my_secrets import OPENDOTA_API_KEY
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 

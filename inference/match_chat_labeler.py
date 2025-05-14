@@ -27,7 +27,15 @@ def label_match(input_path, output_path):
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
 
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print(f"✅ Using GPU: {torch.cuda.get_device_name(0)}")
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        device = torch.device("mps")
+        print("✅ Using MPS (Metal) on macOS")
+    else:
+        device = torch.device("cpu")
+        print("⚠️ Using CPU")
     classifier = pipeline("text-classification", model=model, tokenizer=tokenizer, device=device)
 
     labeled_output = []

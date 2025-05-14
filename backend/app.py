@@ -26,6 +26,9 @@ def predict_toxicity(contexts):
         json.dump(contexts, json_file, indent=4, ensure_ascii=False)
     label_match("backend/contexts.json", "backend/messages_output.json")
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"status": "ok", "message": "Toxicity Ward backend is alive"}), 200
 
 @app.route("/get-toxic-messages", methods=["GET", "POST"])
 def get_toxic_messages():
