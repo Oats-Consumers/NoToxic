@@ -1,0 +1,6 @@
+flask
+flask-cors
+requests
+transformers
+torch
+# and any other modules you import
