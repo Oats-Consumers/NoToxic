@@ -6,11 +6,12 @@ from utils.game_info import (
     fetch_match_data, request_reparse, load_hero_data, load_chatwheel_data,
     is_valid_message, get_context_for_chat_message
 )
+from tqdm import tqdm
 
 # Config
 OUTPUT_FILE = "datasets/unlabeled_dataset.jsonl"
 LAST_ID_FILE = "datasets/last_seen_match_id.txt"
-MAX_MESSAGES = 1082  # Target total messages (existing + new)
+MAX_MESSAGES = 10000  # Target total messages (existing + new)
 BATCH_SIZE = 1
 
 def load_last_seen_id():
@@ -37,7 +38,7 @@ def collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chat
     if not chat_log:
         print(f"No messages for match {match_id}. Requesting reparse.")
         request_reparse(match_id)
-        for retry in range(20):
+        for retry in range(4):
             time.sleep(15)
             match_data = fetch_match_data(match_id)
             chat_log = match_data.get("chat") if match_data else []
@@ -73,28 +74,33 @@ if __name__ == "__main__":
 
     print(f"🔄 Collecting up to {MAX_MESSAGES} messages (total)...")
 
-    while len(dataset) < MAX_MESSAGES:
-        print(f"\n📥 Fetching next batch of match IDs (after {last_seen_id})...")
-        match_ids, last_seen_id = fetch_valid_ids(target_count=BATCH_SIZE, after_match_id=last_seen_id)
+    with tqdm(total=MAX_MESSAGES, initial=len(dataset), desc="Collecting messages") as progress_bar:
+        while len(dataset) < MAX_MESSAGES:
+            print(f"\n📥 Fetching next batch of match IDs (after {last_seen_id})...")
+            match_ids, last_seen_id = fetch_valid_ids(target_count=BATCH_SIZE, after_match_id=last_seen_id)
 
-        if not match_ids:
-            print("⚠️ No more match IDs to process.")
-            break
-
-        for match_id in match_ids:
-            if len(dataset) >= MAX_MESSAGES:
+            if not match_ids:
+                print("⚠️ No more match IDs to process.")
                 break
-            contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
-            dataset.extend(contexts)
 
-        save_last_seen_id(last_seen_id)
+            for match_id in match_ids:
+                if len(dataset) >= MAX_MESSAGES:
+                    break
 
-    dataset = dataset[:MAX_MESSAGES]
-    print(f"\n💾 Saving {len(dataset)} messages to {OUTPUT_FILE}...")
+                try:
+                    contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
+                except Exception as e:
+                    print(f"❌ Error while processing match {match_id}: {e}")
+                    continue
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        for item in dataset:
-            json.dump(item, f)
-            f.write("\n")
+                if not contexts:
+                    continue
 
-    print("✅ Done.")
+                with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
+                    for context in contexts:
+                        json.dump(context, f)
+                        f.write("\n")
+                        dataset.append(context)
+                        progress_bar.update(1)
+
+            save_last_seen_id(last_seen_id)
