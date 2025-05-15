@@ -16,6 +16,7 @@ class OpenDotaClient:
     RECENT_MATCHES_URL = "https://api.opendota.com/api/players/{}/matches"
 
     DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11]
+    INITIAL_STEAM_ID64 = 76561197960265728
 
 
     def get_public_matches(self, less_than_match_id, parsed_matches = True):
@@ -34,20 +35,17 @@ class OpenDotaClient:
         url = self.REPARSE_MATCH_URL.format(match_id)
         return requests.post(url, headers=self.headers)
 
-    def get_player_info(self, account_id, steam32=True):
-        if not steam32:
-            account_id = self.steam64_to_steam32(account_id)
+    def get_player_info(self, account_id):
+        if account_id >= self.INITIAL_STEAM_ID64:
+            account_id = account_id - self.INITIAL_STEAM_ID64
         response = requests.get(self.PLAYER_INFO_URL.format(account_id), headers=self.headers)
         response.raise_for_status()
         return response.json()
 
 
-    def get_player_matches(self, account_id, limit = 20, offset = 0, steam32=True):
-        if not steam32:
-            account_id = self.steam64_to_steam32(account_id)
+    def get_player_matches(self, account_id, limit = 20, offset = 0):
+        if account_id >= self.INITIAL_STEAM_ID64:
+            account_id = account_id - self.INITIAL_STEAM_ID64
         response = requests.get(self.RECENT_MATCHES_URL.format(account_id), params= {"limit": limit, "offset": offset}, headers=self.headers)
         response.raise_for_status()
         return response.json()
-
-    def steam64_to_steam32(self, steam64):
-        return steam64 - 76561197960265728
