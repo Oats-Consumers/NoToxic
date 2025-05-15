@@ -14,6 +14,7 @@ class OpenDotaClient:
     REPARSE_MATCH_URL  = "https://api.opendota.com/api/request/{}"
     PLAYER_INFO_URL    = "https://api.opendota.com/api/players/{}"
     RECENT_MATCHES_URL = "https://api.opendota.com/api/players/{}/matches"
+    WIN_LOSE_URL = "https://api.opendota.com/api/players/{}/wl"
 
     DEFAULT_ENGLISH_REGIONS = [1, 2, 3, 5, 6, 7, 11]
     INITIAL_STEAM_ID64 = 76561197960265728
@@ -47,5 +48,12 @@ class OpenDotaClient:
         if account_id >= self.INITIAL_STEAM_ID64:
             account_id = account_id - self.INITIAL_STEAM_ID64
         response = requests.get(self.RECENT_MATCHES_URL.format(account_id), params= {"limit": limit, "offset": offset}, headers=self.headers)
+        response.raise_for_status()
+        return response.json()
+
+    def get_player_win_lose(self, account_id):
+        if account_id >= self.INITIAL_STEAM_ID64:
+            account_id = account_id - self.INITIAL_STEAM_ID64
+        response = requests.get(self.WIN_LOSE_URL.format(account_id), headers=self.headers)
         response.raise_for_status()
         return response.json()

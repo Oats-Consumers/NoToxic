@@ -10,6 +10,7 @@ import time
 import re
 import atexit
 from utils.language_check import is_english, save_cache
+from my_secrets import OPENDOTA_API_KEY
 atexit.register(save_cache)
 
 # Precompiled regex to detect private-use Unicode (e.g., emojis like \ue128)
