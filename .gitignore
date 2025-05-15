@@ -1,1 +1,6 @@
+my_secrets.py
+py__pycache__
+__pycache__
 my_secrets.py__pycache__/
+*.pyc
+__pycache__/
