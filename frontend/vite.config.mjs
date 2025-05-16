@@ -44,7 +44,7 @@ export default defineConfig({
     ],
   },
   define: {
-    'process.env': process.env,
+    'process.env.VITE_API_BASE': JSON.stringify(process.env.VITE_API_BASE),
   },
   resolve: {
     alias: {
