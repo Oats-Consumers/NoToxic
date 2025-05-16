@@ -17,7 +17,7 @@ This document explains how to fully restore your development environment on RunP
 cd /workspace
 git clone --recurse-submodules https://github.com/Oats-Consumers/NoToxic.git
 cd NoToxic
-git checkout docker-pod-deployment
+git checkout cors
 apt update && apt install -y git-lfs
 git lfs install
 git lfs pull
