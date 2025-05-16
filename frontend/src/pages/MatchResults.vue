@@ -73,6 +73,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+const API_BASE = import.meta.env.VITE_API_BASE
 
 const route = useRoute()
 const matchId = route.params.matchId
