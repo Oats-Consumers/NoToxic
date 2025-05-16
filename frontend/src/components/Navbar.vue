@@ -8,32 +8,34 @@
     <v-spacer />
 
     <!-- ✅ Right-side when logged in -->
-    <div v-if="loggedIn" class="d-flex align-center">
-      <v-btn color="white" class="mr-2" @click="goToMyMatches">
-        🎮 Check My Games
-      </v-btn>
-      <v-btn
-        variant="text"
-        density="compact"
-        size="small"
-        class="text-white"
-        @click="logout"
-      >
-        Logout
+    <div v-if="false">
+      <div v-if="loggedIn" class="d-flex align-center">
+        <v-btn color="white" class="mr-2" @click="goToMyMatches">
+          🎮 Check My Games
+        </v-btn>
+        <v-btn
+          variant="text"
+          density="compact"
+          size="small"
+          class="text-white"
+          @click="logout"
+        >
+          Logout
+        </v-btn>
+      </div>
+  
+      <!-- ✅ Right-side when not logged in -->
+      <v-btn v-else color="white" class="mr-4" @click="loginWithSteam">
+        <v-avatar size="24" class="mr-2">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
+            alt="Steam"
+            height="24"
+          />
+        </v-avatar>
+        Login with Steam
       </v-btn>
     </div>
-
-    <!-- ✅ Right-side when not logged in -->
-    <v-btn v-else color="white" class="mr-4" @click="loginWithSteam">
-      <v-avatar size="24" class="mr-2">
-        <img
-  src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
-  alt="Steam"
-  height="24"
-/>
-      </v-avatar>
-      Login with Steam
-    </v-btn>
   </v-app-bar>
 </template>
 

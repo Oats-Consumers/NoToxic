@@ -89,7 +89,7 @@ onMounted(async () => {
     const res = await fetch(`${API_BASE}/label-chat?match_id=${matchId}`)
     messages.value = await res.json()
 
-    const heroRes = await fetch('/heroes.json')
+    const heroRes = await fetch('/NoToxic/heroes.json')
     const heroData = await heroRes.json()
     for (const hero of Object.values(heroData)) {
       heroImageMap.value[hero.id] = `https://cdn.cloudflare.steamstatic.com${hero.img}`
