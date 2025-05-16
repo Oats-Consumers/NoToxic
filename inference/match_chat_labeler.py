@@ -25,6 +25,7 @@ def label_match(input_path, output_path):
     jsonl_to_model_input_converter.process_jsonl_to_csv(input_path, temp_csv_path, False)
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+    tokenizer.additional_special_tokens({"spec"})
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
 
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
