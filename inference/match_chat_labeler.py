@@ -10,20 +10,20 @@ import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
-from utils import jsonl_to_model_input_converter
+from utils import split_labeled_dataset_by_section
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match.jsonl")
 DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match_output.jsonl")
-MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best-s-nlp-roberta-toxicity-classifier-split")
+MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best_SkolkovoInstitute_roberta_toxicity_classifier_tokenized")
 
 def label_match(input_path):
     print(f"Input path: {input_path}")
     with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as temp_csv:
         temp_csv_path = temp_csv.name
 
-    jsonl_to_model_input_converter.process_jsonl_to_csv(input_path, temp_csv_path, False)
+    split_labeled_dataset_by_section.process_jsonl_to_csv(input_path, temp_csv_path, False)
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
