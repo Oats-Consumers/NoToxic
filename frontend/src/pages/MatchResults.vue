@@ -8,14 +8,24 @@
     </v-row>
 
     <!-- Error / Empty view -->
-    <v-row v-else-if="fetchError" align="center" justify="center" class="fill-height">
+    <v-row
+      v-else-if="fetchError"
+      align="center"
+      justify="center"
+      class="fill-height"
+    >
       <v-col cols="12" class="text-center">
-        <h1 class="text-white display-1">
-          COULDN'T FETCH THE DATA / 0 MESSAGES
-        </h1>
+        <!-- Bigger Sad Pudge avatar -->
+        <v-avatar size="200" class="mx-auto mb-6">
+          <v-img :src="sadPudge" class="rounded-circle" contain />
+        </v-avatar>
+
+        <!-- Smaller error message -->
+        <h2 class="text-white text-h4">
+          Our data provider couldn't get the data for this match.
+        </h2>
       </v-col>
     </v-row>
-
     <!-- Loaded chat content -->
     <v-row v-else justify="center">
       <v-col cols="10">
@@ -83,6 +93,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
+// Asset import for sad Pudge
+import sadPudge from '../assets/sad_pudge.jpg'
 const API_BASE = import.meta.env.VITE_API_BASE
 
 const route = useRoute()
