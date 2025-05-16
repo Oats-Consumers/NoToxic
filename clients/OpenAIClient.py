@@ -1,18 +1,17 @@
+from datetime import datetime, timedelta, timezone
+import requests
+
 from clients.PromptBuilder import PromptBuilder
 from my_secrets import OPENAI_API_KEY
 from openai import OpenAI
 
 
 class OpenAIClient:
-    __api_key = ""
-    model = ""
 
-    def __init__(self, api_key = OPENAI_API_KEY, model = "gpt-4o"):
+    def __init__(self, api_key=OPENAI_API_KEY, model="gpt-4o"):
         self.model = model
         self.api_key = api_key
-
-
-    __client = OpenAI(api_key=OPENAI_API_KEY)
+        self.__client = OpenAI(api_key=self.api_key)
 
     def __chat(self, prompt):
         response = self.__client.chat.completions.create(

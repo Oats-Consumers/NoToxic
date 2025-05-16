@@ -11,7 +11,7 @@ from tqdm import tqdm
 # Config
 OUTPUT_FILE = "datasets/unlabeled_dataset.jsonl"
 LAST_ID_FILE = "datasets/last_seen_match_id.txt"
-MAX_MESSAGES = 10000  # Target total messages (existing + new)
+MAX_MESSAGES = 10500  # Target total messages (existing + new)
 BATCH_SIZE = 1
 
 def load_last_seen_id():
