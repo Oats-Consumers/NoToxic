@@ -50,6 +50,7 @@ class OllamaClient:
             return None
 
     def check_is_english_text(self, text):
+        print(f"Checking using Ollama if text is English: {text}")
         try:
             prompt = PromptBuilder.LanguageCheckPrompt().build_is_english_prompt(text)
             result = self.chat(prompt).strip().lower()

@@ -14,9 +14,9 @@ else:
 
 def is_english(text):
     text = text.strip()
+    #print("in is english function, using ollama")
     if text in language_cache:
         return language_cache[text]
-
     is_eng = OLLAMA_CLIENT.check_is_english_text(text)
     language_cache[text] = is_eng
     return is_eng

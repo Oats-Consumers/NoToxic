@@ -70,7 +70,7 @@ const handleSearch = async () => {
 
   try {
     // First try to treat it as account ID
-    await axios.get(`http://127.0.0.1:5000/player-recentmatches?account_id=${id}`, { withCredentials: true })
+    await axios.get(`http://127.0.0.1:5000/player-matches?account_id=${id}`, { withCredentials: true })
     console.log("Account ID found:", id)
     router.push({ name: 'MyMatches', query: { account_id: id } })
   } catch (accountErr) {
