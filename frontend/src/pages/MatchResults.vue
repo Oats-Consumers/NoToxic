@@ -7,6 +7,15 @@
       </v-col>
     </v-row>
 
+    <!-- Error / Empty view -->
+    <v-row v-else-if="fetchError" align="center" justify="center" class="fill-height">
+      <v-col cols="12" class="text-center">
+        <h1 class="text-white display-1">
+          COULDN'T FETCH THE DATA / 0 MESSAGES
+        </h1>
+      </v-col>
+    </v-row>
+
     <!-- Loaded chat content -->
     <v-row v-else justify="center">
       <v-col cols="10">
@@ -73,29 +82,43 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+
 const API_BASE = import.meta.env.VITE_API_BASE
 
 const route = useRoute()
 const matchId = route.params.matchId
+
 const messages = ref([])
 const loading = ref(true)
+const fetchError = ref(false)
 const selectedMessage = ref(null)
 const heroImageMap = ref({})
 
 onMounted(async () => {
   try {
     loading.value = true
+    fetchError.value = false
 
+    // Fetch chat messages
     const res = await fetch(`${API_BASE}/label-chat?match_id=${matchId}`)
-    messages.value = await res.json()
+    if (!res.ok) throw new Error(`Message fetch failed: ${res.status}`)
+    const data = await res.json()
+    if (!Array.isArray(data) || data.length === 0) {
+      // Treat empty array as error
+      throw new Error("No messages returned")
+    }
+    messages.value = data
 
+    // Fetch hero data
     const heroRes = await fetch(`${import.meta.env.BASE_URL}heroes.json`)
+    if (!heroRes.ok) throw new Error(`Hero data fetch failed: ${heroRes.status}`)
     const heroData = await heroRes.json()
     for (const hero of Object.values(heroData)) {
       heroImageMap.value[hero.id] = `https://cdn.cloudflare.steamstatic.com${hero.img}`
     }
   } catch (err) {
     console.error("Failed to fetch messages or hero data", err)
+    fetchError.value = true
   } finally {
     loading.value = false
   }
@@ -110,11 +133,14 @@ const getHeroImage = (heroId) => {
 .text-white {
   color: white;
 }
+.display-1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
 .transparent-list {
   background-color: transparent !important;
 }
 
-/* Overwrite Vuetify padding (16px) and apply 10px all sides */
 .chat-row {
   display: flex;
   align-items: center;
@@ -146,19 +172,17 @@ const getHeroImage = (heroId) => {
 .chat-player {
   display: flex;
   align-items: center;
-  gap: 12px; /* 👈 Same spacing as outer .chat-line */
+  gap: 12px;
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
-  flex-shrink: 0; /* Prevent shrinking */
-  flex-grow: 0;   /* Don't allow expansion to take extra space */
+  flex-shrink: 0;
+  flex-grow: 0;
 }
-
 .player-name,
 .hero-name {
   white-space: nowrap;
 }
-
 .chat-message {
   font-size: 1.1rem;
   font-weight: 500;
