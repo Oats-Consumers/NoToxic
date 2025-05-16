@@ -82,22 +82,31 @@ def build_input_string(entry):
 def get_label(entry):
     return 1 if entry["toxicity"].upper() == "TOXIC" else 0
 
-def process_jsonl_to_csv(input_json_path, output_csv_path, label = True):
+def process_jsonl_to_csv(input_json_path, output_csv_path, labeling = True):
     processed = []
-    with open(input_json_path, "r", encoding="utf-8") as f:
-        for line in f:
-            if label:
-                entry = json.loads(line.strip())
-                input_text = build_input_string(entry)
-                label = get_label(entry)
-                processed.append({"input_text": input_text, "label": label})
-            else:
-                entry = json.loads(line.strip())
-                input_text = build_input_string(entry)
-                processed.append({"input_text": input_text})
+
+    with open(input_json_path, "r") as f:
+        data = json.load(f)
+
+    for entry in data:
+        input_text = build_input_string(entry)
+        if labeling:
+            label = 1 if entry["toxicity"].upper() == "TOXIC" else 0
+            processed.append({
+                "input_text": input_text,
+                "label": label
+            })
+        else:
+            processed.append({
+                "input_text": input_text,
+            })
 
     with open(output_csv_path, "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["input_text", "label"]
+        if labeling:
+            fieldnames = ["input_text", "label"]
+        else:
+            fieldnames = ["input_text"]
+
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in processed:
