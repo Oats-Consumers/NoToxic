@@ -54,6 +54,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+const API_BASE = import.meta.env.VITE_API_BASE
 
 const router = useRouter()
 const inputId = ref('')
@@ -70,7 +71,7 @@ const handleSearch = async () => {
 
   try {
     // First try to treat it as account ID
-    await axios.get(`http://127.0.0.1:5000/player-matches?account_id=${id}`, { withCredentials: true })
+    await axios.get(`${API_BASE}/player-matches?account_id=${id}`, { withCredentials: true })
     console.log("Account ID found:", id)
     router.push({ name: 'MyMatches', query: { account_id: id } })
   } catch (accountErr) {
@@ -84,7 +85,7 @@ const handleSearch = async () => {
       const hasParsed = data.od_data.has_parsed
       console.log("hasParsed:", hasParsed)
       if (!hasParsed) {
-        console.log(await axios.get(`http://127.0.0.1:5000/reparse-match?match_id=${data.match_id}`))
+        console.log(await axios.get(`${API_BASE}/reparse-match?match_id=${data.match_id}`))
       }
       router.push({ name: 'MatchResults', params: { matchId: id } })
     } catch (matchErr) {

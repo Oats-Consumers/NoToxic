@@ -126,8 +126,8 @@ const loadMatches = async () => {
     loading.value = true
     const offset = (currentPage.value - 1) * pageSize
     const url = accountId.value
-      ? `http://127.0.0.1:5000/player-matches?account_id=${accountId.value}&offset=${offset}`
-      : `http://127.0.0.1:5000/player-matches?offset=${offset}`
+      ? `${API_BASE}/player-matches?account_id=${accountId.value}&offset=${offset}`
+      : `${API_BASE}/player-matches?offset=${offset}`
 
     const playerRes = await axios.get(url, { withCredentials: true })
     matches.value = playerRes.data.matches
@@ -142,8 +142,8 @@ const loadMatches = async () => {
 const loadTotalPages = async () => {
   try {
     const url = accountId.value
-      ? `http://127.0.0.1:5000/win-lose-amount?account_id=${accountId.value}`
-      : `http://127.0.0.1:5000/win-lose-amount`
+      ? `${API_BASE}/win-lose-amount?account_id=${accountId.value}`
+      : `${API_BASE}/win-lose-amount`
 
     const res = await axios.get(url, { withCredentials: true })
     const totalMatches = res.data.win + res.data.lose

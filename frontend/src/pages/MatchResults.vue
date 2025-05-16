@@ -85,7 +85,7 @@ onMounted(async () => {
   try {
     loading.value = true
 
-    const res = await fetch(`http://127.0.0.1:5000/label-chat?match_id=${matchId}`)
+    const res = await fetch(`${API_BASE}/label-chat?match_id=${matchId}`)
     messages.value = await res.json()
 
     const heroRes = await fetch('/heroes.json')

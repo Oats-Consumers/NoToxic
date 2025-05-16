@@ -46,7 +46,7 @@ const loggedIn = ref(false)
 
 onMounted(async () => {
   try {
-    const res = await axios.get("http://127.0.0.1:5000/check-login", {
+    const res = await axios.get(`${API_BASE}/check-login`, {
       withCredentials: true // ✅ send session cookie
     })
     if (res.data.loggedIn) {
@@ -59,7 +59,7 @@ onMounted(async () => {
 
 const logout = async () => {
   try {
-    await axios.get("http://127.0.0.1:5000/logout", {
+    await axios.get(`${API_BASE}/logout`, {
       withCredentials: true,
     })
     loggedIn.value = false
@@ -71,7 +71,7 @@ const logout = async () => {
 
 
 const loginWithSteam = () => {
-  window.location.href = "http://127.0.0.1:5000/login"
+  window.location.href = `${API_BASE}/login`
 }
 
 import { useRouter } from 'vue-router'

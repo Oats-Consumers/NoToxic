@@ -1,22 +1,35 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+import re
 from flask import Flask, redirect, request, session, url_for, jsonify
 from openid.consumer.consumer import Consumer, SUCCESS
 from flask_cors import CORS
-from backend.request_handler import request_label_chat, request_player_matches, request_win_lose_amount, request_reparse_match
-import re
+
+# Set up path and secrets
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from my_secrets import FLASK_SECRET_KEY, FRONTEND_ORIGIN
+from backend.request_handler import (
+    request_label_chat,
+    request_player_matches,
+    request_win_lose_amount,
+    request_reparse_match
+)
 
 app = Flask(__name__)
-app.secret_key = "supersecret"
+app.secret_key = FLASK_SECRET_KEY
 
+# Flask session cookie settings
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # or "None" if using HTTPS
+app.config["SESSION_COOKIE_SECURE"] = False    # set to True only if HTTPS
+
+# CORS configuration
+CORS(app, supports_credentials=True, origins=[FRONTEND_ORIGIN])
+
+# In-memory store for Steam OpenID session (instead of full session store)
 store = None
-temp_openid_session = {}  # ❗ Used instead of Flask session
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # or "None" if you're using HTTPS
-app.config["SESSION_COOKIE_SECURE"] = False    # True only if served over HTTPS
+temp_openid_session = {}
 
-CORS(app, supports_credentials=True, origins=["http://127.0.0.1:3000"])
+# Routes
 
 @app.route("/")
 def index():
@@ -39,12 +52,13 @@ def authorize():
     response = consumer.complete(dict(request.args), request.url)
 
     if response.status == SUCCESS:
-        steam_id = re.search(r"\d+$", response.getDisplayIdentifier()).group()
-        session["steam_id"] = steam_id
-        return redirect("http://127.0.0.1:3000")
-
-    else:
-        return "❌ Login failed."
+        match = re.search(r"\d+$", response.getDisplayIdentifier())
+        if match:
+            steam_id = match.group()
+            session["steam_id"] = steam_id
+            return redirect(FRONTEND_ORIGIN)
+        return "❌ Failed to extract Steam ID.", 400
+    return "❌ Login failed."
 
 @app.route("/logout")
 def logout():
@@ -57,27 +71,43 @@ def check_login():
     if steam_id:
         return jsonify({"loggedIn": True, "steam_id": steam_id})
     return jsonify({"loggedIn": False}), 401
-    
-@app.route('/label-chat', methods=['GET'])
+
+@app.route("/label-chat", methods=["GET"])
 def label_chat():
     match_id = request.args.get('match_id')
-    return request_label_chat(match_id)
+    try:
+        return request_label_chat(match_id)
+    except Exception as e:
+        app.logger.error(f"Error labeling chat for match {match_id}: {e}")
+        return jsonify({"error": "Failed to label chat"}), 500
 
-@app.route('/player-matches')
+@app.route("/player-matches")
 def player_matches():
     account_id = request.args.get("account_id") or session.get("steam_id")
     offset = request.args.get('offset', default=0, type=int)
-    return request_player_matches(account_id, offset)
+    try:
+        return request_player_matches(account_id, offset)
+    except Exception as e:
+        app.logger.error(f"Error fetching player matches: {e}")
+        return jsonify({"error": "Failed to fetch matches"}), 500
 
-@app.route('/win-lose-amount')
+@app.route("/win-lose-amount")
 def win_lose_amount():
     account_id = request.args.get("account_id") or session.get("steam_id")
-    return request_win_lose_amount(account_id)
+    try:
+        return request_win_lose_amount(account_id)
+    except Exception as e:
+        app.logger.error(f"Error fetching win/lose stats: {e}")
+        return jsonify({"error": "Failed to fetch win/lose amount"}), 500
 
-@app.route('/reparse-match')
+@app.route("/reparse-match")
 def reparse_match():
     match_id = request.args.get('match_id')
-    return request_reparse_match(match_id)
+    try:
+        return request_reparse_match(match_id)
+    except Exception as e:
+        app.logger.error(f"Error reparsing match {match_id}: {e}")
+        return jsonify({"error": "Failed to reparse match"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
