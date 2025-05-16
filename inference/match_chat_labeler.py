@@ -5,6 +5,7 @@ import tempfile
 import os
 import csv
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -18,9 +19,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match.jsonl")
 DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match_output.jsonl")
-MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best-SkolkovoInstitute-roberta-toxicity-classifier-tokenized")
+MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models",
+                          "best-SkolkovoInstitute-roberta-toxicity-classifier-tokenized")
 
-def label_match(input_path, output_path):
+
+def label_match(input_path):
+    print(f"Input path: {input_path}")
     with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as temp_csv:
         temp_csv_path = temp_csv.name
 
@@ -29,7 +33,8 @@ def label_match(input_path, output_path):
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
     tokenizer.add_special_tokens({'additional_special_tokens': SPECIAL_TOKENS})
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device(
+        "mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
     pipeline("text-classification", model=model, tokenizer=tokenizer, device=device)
 
     labeled_output = []
@@ -58,13 +63,19 @@ def label_match(input_path, output_path):
                 "confidence": confidence
             })
 
-    with open(output_path, "w", encoding="utf-8") as out_file:
-        for item in labeled_output:
-            out_file.write(json.dumps(item) + "\n")
-
-    # Clean up temp file
     os.remove(temp_csv_path)
-    print(f"Labeled output written to {output_path}")
+    return labeled_output
+
+
+def predict_toxicity(contexts):
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_json:
+        temp_json_path = temp_json.name
+    with open(temp_json_path, "w") as json_file:
+        json.dump(contexts, json_file, indent=4)
+    print(f"Contexts saved to {temp_json_path}")
+    labeled_output = label_match(temp_json_path)
+    os.remove(temp_json_path)
+    return labeled_output
 
 
 if __name__ == "__main__":
