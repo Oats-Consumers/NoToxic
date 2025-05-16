@@ -6,7 +6,8 @@ INPUT_JSON_PATH = "datasets/labeled_dataset.jsonl"  # adjust if needed
 OUTPUT_CSV_PATH = "datasets/processed_dataset.csv"
 
 def format_token(text):
-    return f"[{text.upper().replace(" ", "_")}]"
+    token_value = text.upper().replace(" ", "_")
+    return f"[{token_value}]"
 
 def interpret_advantage(time_str, gold, xp):
     minutes, _ = time_str.split(":")
@@ -81,14 +82,19 @@ def build_input_string(entry):
 def get_label(entry):
     return 1 if entry["toxicity"].upper() == "TOXIC" else 0
 
-def process_jsonl_to_csv(input_json_path, output_csv_path):
+def process_jsonl_to_csv(input_json_path, output_csv_path, label = True):
     processed = []
     with open(input_json_path, "r", encoding="utf-8") as f:
         for line in f:
-            entry = json.loads(line.strip())
-            input_text = build_input_string(entry)
-            label = get_label(entry)
-            processed.append({"input_text": input_text, "label": label})
+            if label:
+                entry = json.loads(line.strip())
+                input_text = build_input_string(entry)
+                label = get_label(entry)
+                processed.append({"input_text": input_text, "label": label})
+            else:
+                entry = json.loads(line.strip())
+                input_text = build_input_string(entry)
+                processed.append({"input_text": input_text})
 
     with open(output_csv_path, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["input_text", "label"]

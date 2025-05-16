@@ -10,13 +10,15 @@ import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
+from utils import jsonl_to_model_input_converter
 from utils import split_labeled_dataset_by_section
+from utils import SPECIAL_TOKENS
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match.jsonl")
 DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match_output.jsonl")
-MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best_SkolkovoInstitute_roberta_toxicity_classifier_tokenized")
+MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best-SkolkovoInstitute-roberta-toxicity-classifier-tokenized")
 
 def label_match(input_path):
     print(f"Input path: {input_path}")
@@ -26,29 +28,19 @@ def label_match(input_path):
     split_labeled_dataset_by_section.process_jsonl_to_csv(input_path, temp_csv_path, False)
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+    tokenizer.add_special_tokens({'additional_special_tokens': SPECIAL_TOKENS})
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
-
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-        print(f"✅ Using GPU: {torch.cuda.get_device_name(0)}")
-    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        device = torch.device("mps")
-        print("✅ Using MPS (Metal) on macOS")
-    else:
-        device = torch.device("cpu")
-        print("⚠️ Using CPU")
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
     pipeline("text-classification", model=model, tokenizer=tokenizer, device=device)
 
     labeled_output = []
     with open(temp_csv_path, "r", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            context = row["context"]
-            message = row["message"]
+            input_text = row["input_text"]
 
             inputs = tokenizer(
-                message,
-                context,
+                input_text,
                 truncation=True,
                 padding=True,
                 max_length=512,
@@ -63,8 +55,6 @@ def label_match(input_path):
                 confidence = scores[label_id].item()
 
             labeled_output.append({
-                "message": message,
-                "context": context,
                 "label": label,
                 "confidence": confidence
             })

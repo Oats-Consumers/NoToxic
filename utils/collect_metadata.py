@@ -27,6 +27,8 @@ def get_metadata(entry):
 
     killed_metadata = []
     for hero in entry["killed_before_time"].keys():
+        if hero.startswith("npc_dota_lone_druid_bear"):
+            continue
         killed_metadata.append({
             "hero_id": hero_ids[hero],
             "team": team_enemy,
