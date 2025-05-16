@@ -1,80 +1,68 @@
-import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import json
-from flask import Flask, request, jsonify
+import os
+import re
+from flask import Flask, redirect, request, session, url_for, jsonify
+from openid.consumer.consumer import Consumer, SUCCESS
 from flask_cors import CORS
-from scripts.build_unlabeled_dataset import collect_contexts_from_match
-from utils.game_info import load_hero_data, load_chatwheel_data, fetch_match_data, fetch_recent_matches, fetch_player
-from inference.match_chat_labeler import label_match
+
+# Set up path and secrets
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from my_secrets import FLASK_SECRET_KEY, FRONTEND_ORIGIN
+from backend.request_handler import (
+    request_label_chat,
+    request_player_matches,
+    request_win_lose_amount,
+    request_reparse_match
+)
+
 app = Flask(__name__)
-CORS(app)
+app.secret_key = FLASK_SECRET_KEY
 
-def predict_toxicity(contexts):
-    # Save messages to a JSON file
-    with open("backend/contexts.json", "w") as json_file:
-        json.dump(contexts, json_file, indent=4)
-    label_match("backend/contexts.json", "backend/messages_output.json")
-    
-hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
-chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
-@app.route('/get-toxic-messages', methods=['GET', 'POST'])
-def get_toxic_messages():
+
+# CORS config (adjust as needed for prod)
+CORS(
+    app,
+    origins="*"
+)
+
+# Routes
+
+@app.route("/label-chat", methods=["GET"])
+def label_chat():
     match_id = request.args.get('match_id')
-    raw_match = fetch_match_data(match_id)
-    players_data = raw_match.get("players", [])
-    players_info = [
-        {
-            "player_slot": player.get("player_slot"),
-            "player_name": player.get("personaname"),
-            "hero_id": player.get("hero_id"),
-            "hero_name": hero_names.get(player.get("hero_id"), "Unknown Hero")  # Lookup heroname
+    try:
+        return request_label_chat(match_id)
+    except Exception as e:
+        app.logger.error(f"Error labeling chat for match {match_id}: {e}")
+        return jsonify({"error": "Failed to label chat"}), 500
 
-        }
-        for player in players_data
-    ]
-    print(players_info)
-    if not match_id:
-        return jsonify({"error": "No match_id provided"}), 400
-    contexts = collect_contexts_from_match(match_id, hero_names, npc_names, npc_to_id, chatwheel_data)
-    predict_toxicity(contexts)
-    messages_output_path = os.path.join(os.path.dirname(__file__), "messages_output.json")
-    if not os.path.exists(messages_output_path):
-        return jsonify({"error": "messages_output.json not found"}), 500
+@app.route("/player-matches")
+def player_matches():
+    account_id = request.args.get("account_id") or session.get("steam_id")
+    offset = request.args.get('offset', default=0, type=int)
+    try:
+        return request_player_matches(account_id, offset)
+    except Exception as e:
+        app.logger.error(f"Error fetching player matches: {e}")
+        return jsonify({"error": "Failed to fetch matches"}), 500
 
-    with open(messages_output_path, "r", encoding="utf-8") as f:
-        messages_output = [json.loads(line) for line in f]
+@app.route("/win-lose-amount")
+def win_lose_amount():
+    account_id = request.args.get("account_id") or session.get("steam_id")
+    try:
+        return request_win_lose_amount(account_id)
+    except Exception as e:
+        app.logger.error(f"Error fetching win/lose stats: {e}")
+        return jsonify({"error": "Failed to fetch win/lose amount"}), 500
 
-    # Ensure the lengths of contexts and messages_output match
-    if len(contexts) != len(messages_output):
-        return jsonify({"error": "Mismatch between contexts and messages_output lengths"}), 500
+@app.route("/reparse-match")
+def reparse_match():
+    match_id = request.args.get('match_id')
+    try:
+        return request_reparse_match(match_id)
+    except Exception as e:
+        app.logger.error(f"Error reparsing match {match_id}: {e}")
+        return jsonify({"error": "Failed to reparse match"}), 500
 
-    # Add labels to contexts
-    for i in range(len(contexts)):
-        contexts[i]["label"] = messages_output[i]["label"]
-        for player in players_info:
-            if player["hero_name"] in contexts[i]["hero_name"]:
-                contexts[i]["player_name"] = player["player_name"]
-                contexts[i]["hero_id"] = player["hero_id"]
-                break
-    open("backend/contexts.json", "w").close()
-    open("backend/messages_output.json", "w").close()
-    return jsonify(contexts)
-
-
-def get_steam32(steam64_id):
-    steam32_id = int(steam64_id) - 76561197960265728
-    return str(steam32_id)
-
-@app.route('/player-recentmatches', methods=['GET'])
-def get_toxic_messages_player():
-    accound_id = get_steam32(request.args.get('accound_id'))
-    matches_id = fetch_recent_matches(accound_id)
-    player_info = fetch_player(accound_id)
-    if not matches_id:
-        return jsonify({"error": "No match_id provided"}), 400
-    return jsonify({"player": player_info,
-                   "matches": matches_id})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)

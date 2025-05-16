@@ -1,0 +1,1321 @@
+{
+  "add_prefix_space": false,
+  "added_tokens_decoder": {
+    "0": {
+      "content": "<s>",
+      "lstrip": false,
+      "normalized": true,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "1": {
+      "content": "<pad>",
+      "lstrip": false,
+      "normalized": true,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "2": {
+      "content": "</s>",
+      "lstrip": false,
+      "normalized": true,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "3": {
+      "content": "<unk>",
+      "lstrip": false,
+      "normalized": true,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "15483": {
+      "content": "|",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50264": {
+      "content": "<mask>",
+      "lstrip": true,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50265": {
+      "content": "[GAME_STATE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50266": {
+      "content": "[KILLED]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50267": {
+      "content": "[KILLED_BY]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50268": {
+      "content": "[MSG]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50269": {
+      "content": "[PREVIOUS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50270": {
+      "content": "<SEP>",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50271": {
+      "content": "[SLIGHTLY_AHEAD]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50272": {
+      "content": "SLIGHTLY_BEHIND",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50273": {
+      "content": "[BEHIND]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50274": {
+      "content": "[AHEAD]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50275": {
+      "content": "[DOMINATING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50276": {
+      "content": "[BEING_STOMPED]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50277": {
+      "content": "[ANTI-MAGE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50278": {
+      "content": "[AXE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50279": {
+      "content": "[BANE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50280": {
+      "content": "[BLOODSEEKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50281": {
+      "content": "[CRYSTAL_MAIDEN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50282": {
+      "content": "[DROW_RANGER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50283": {
+      "content": "[EARTHSHAKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50284": {
+      "content": "[JUGGERNAUT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50285": {
+      "content": "[MIRANA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50286": {
+      "content": "[MORPHLING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50287": {
+      "content": "[SHADOW_FIEND]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50288": {
+      "content": "[PHANTOM_LANCER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50289": {
+      "content": "[PUCK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50290": {
+      "content": "[PUDGE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50291": {
+      "content": "[RAZOR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50292": {
+      "content": "[SAND_KING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50293": {
+      "content": "[STORM_SPIRIT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50294": {
+      "content": "[SVEN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50295": {
+      "content": "[TINY]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50296": {
+      "content": "[VENGEFUL_SPIRIT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50297": {
+      "content": "[WINDRANGER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50298": {
+      "content": "[ZEUS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50299": {
+      "content": "[KUNKKA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50300": {
+      "content": "[LINA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50301": {
+      "content": "[LION]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50302": {
+      "content": "[SHADOW_SHAMAN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50303": {
+      "content": "[SLARDAR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50304": {
+      "content": "[TIDEHUNTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50305": {
+      "content": "[WITCH_DOCTOR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50306": {
+      "content": "[LICH]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50307": {
+      "content": "[RIKI]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50308": {
+      "content": "[ENIGMA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50309": {
+      "content": "[TINKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50310": {
+      "content": "[SNIPER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50311": {
+      "content": "[NECROPHOS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50312": {
+      "content": "[WARLOCK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50313": {
+      "content": "[BEASTMASTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50314": {
+      "content": "[QUEEN_OF_PAIN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50315": {
+      "content": "[VENOMANCER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50316": {
+      "content": "[FACELESS_VOID]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50317": {
+      "content": "[WRAITH_KING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50318": {
+      "content": "[DEATH_PROPHET]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50319": {
+      "content": "[PHANTOM_ASSASSIN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50320": {
+      "content": "[PUGNA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50321": {
+      "content": "[TEMPLAR_ASSASSIN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50322": {
+      "content": "[VIPER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50323": {
+      "content": "[LUNA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50324": {
+      "content": "[DRAGON_KNIGHT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50325": {
+      "content": "[DAZZLE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50326": {
+      "content": "[CLOCKWERK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50327": {
+      "content": "[LESHRAC]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50328": {
+      "content": "[NATURE'S_PROPHET]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50329": {
+      "content": "[LIFESTEALER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50330": {
+      "content": "[DARK_SEER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50331": {
+      "content": "[CLINKZ]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50332": {
+      "content": "[OMNIKNIGHT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50333": {
+      "content": "[ENCHANTRESS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50334": {
+      "content": "[HUSKAR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50335": {
+      "content": "[NIGHT_STALKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50336": {
+      "content": "[BROODMOTHER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50337": {
+      "content": "[BOUNTY_HUNTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50338": {
+      "content": "[WEAVER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50339": {
+      "content": "[JAKIRO]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50340": {
+      "content": "[BATRIDER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50341": {
+      "content": "[CHEN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50342": {
+      "content": "[SPECTRE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50343": {
+      "content": "[ANCIENT_APPARITION]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50344": {
+      "content": "[DOOM]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50345": {
+      "content": "[URSA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50346": {
+      "content": "[SPIRIT_BREAKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50347": {
+      "content": "[GYROCOPTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50348": {
+      "content": "[ALCHEMIST]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50349": {
+      "content": "[INVOKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50350": {
+      "content": "[SILENCER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50351": {
+      "content": "[OUTWORLD_DEVOURER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50352": {
+      "content": "[LYCAN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50353": {
+      "content": "[BREWMASTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50354": {
+      "content": "[SHADOW_DEMON]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50355": {
+      "content": "[LONE_DRUID]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50356": {
+      "content": "[CHAOS_KNIGHT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50357": {
+      "content": "[MEEPO]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50358": {
+      "content": "[TREANT_PROTECTOR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50359": {
+      "content": "[OGRE_MAGI]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50360": {
+      "content": "[UNDYING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50361": {
+      "content": "[RUBICK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50362": {
+      "content": "[DISRUPTOR]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50363": {
+      "content": "[NYX_ASSASSIN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50364": {
+      "content": "[NAGA_SIREN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50365": {
+      "content": "[KEEPER_OF_THE_LIGHT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50366": {
+      "content": "[IO]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50367": {
+      "content": "[VISAGE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50368": {
+      "content": "[SLARK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50369": {
+      "content": "[MEDUSA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50370": {
+      "content": "[TROLL_WARLORD]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50371": {
+      "content": "[CENTAUR_WARRUNNER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50372": {
+      "content": "[MAGNUS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50373": {
+      "content": "[TIMBERSAW]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50374": {
+      "content": "[BRISTLEBACK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50375": {
+      "content": "[TUSK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50376": {
+      "content": "[SKYWRATH_MAGE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50377": {
+      "content": "[ABADDON]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50378": {
+      "content": "[ELDER_TITAN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50379": {
+      "content": "[LEGION_COMMANDER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50380": {
+      "content": "[TECHIES]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50381": {
+      "content": "[EMBER_SPIRIT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50382": {
+      "content": "[EARTH_SPIRIT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50383": {
+      "content": "[UNDERLORD]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50384": {
+      "content": "[TERRORBLADE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50385": {
+      "content": "[PHOENIX]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50386": {
+      "content": "[ORACLE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50387": {
+      "content": "[WINTER_WYVERN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50388": {
+      "content": "[ARC_WARDEN]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50389": {
+      "content": "[MONKEY_KING]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50390": {
+      "content": "[DARK_WILLOW]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50391": {
+      "content": "[PANGOLIER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50392": {
+      "content": "[GRIMSTROKE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50393": {
+      "content": "[HOODWINK]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50394": {
+      "content": "[VOID_SPIRIT]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50395": {
+      "content": "[SNAPFIRE]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50396": {
+      "content": "[MARS]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50397": {
+      "content": "[RING_MASTER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50398": {
+      "content": "[DAWNBREAKER]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50399": {
+      "content": "[MARCI]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50400": {
+      "content": "[PRIMAL_BEAST]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50401": {
+      "content": "[MUERTA]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50402": {
+      "content": "[KEZ]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    },
+    "50403": {
+      "content": "[NPC_DOTA_LONE_DRUID_BEAR4]",
+      "lstrip": false,
+      "normalized": false,
+      "rstrip": false,
+      "single_word": false,
+      "special": true
+    }
+  },
+  "additional_special_tokens": [
+    "[GAME_STATE]",
+    "[KILLED]",
+    "[KILLED_BY]",
+    "[MSG]",
+    "[PREVIOUS]",
+    "<SEP>",
+    "|",
+    "[SLIGHTLY_AHEAD]",
+    "SLIGHTLY_BEHIND",
+    "[BEHIND]",
+    "[AHEAD]",
+    "[BEHIND]",
+    "[DOMINATING]",
+    "[BEING_STOMPED]",
+    "[ANTI-MAGE]",
+    "[AXE]",
+    "[BANE]",
+    "[BLOODSEEKER]",
+    "[CRYSTAL_MAIDEN]",
+    "[DROW_RANGER]",
+    "[EARTHSHAKER]",
+    "[JUGGERNAUT]",
+    "[MIRANA]",
+    "[MORPHLING]",
+    "[SHADOW_FIEND]",
+    "[PHANTOM_LANCER]",
+    "[PUCK]",
+    "[PUDGE]",
+    "[RAZOR]",
+    "[SAND_KING]",
+    "[STORM_SPIRIT]",
+    "[SVEN]",
+    "[TINY]",
+    "[VENGEFUL_SPIRIT]",
+    "[WINDRANGER]",
+    "[ZEUS]",
+    "[KUNKKA]",
+    "[LINA]",
+    "[LION]",
+    "[SHADOW_SHAMAN]",
+    "[SLARDAR]",
+    "[TIDEHUNTER]",
+    "[WITCH_DOCTOR]",
+    "[LICH]",
+    "[RIKI]",
+    "[ENIGMA]",
+    "[TINKER]",
+    "[SNIPER]",
+    "[NECROPHOS]",
+    "[WARLOCK]",
+    "[BEASTMASTER]",
+    "[QUEEN_OF_PAIN]",
+    "[VENOMANCER]",
+    "[FACELESS_VOID]",
+    "[WRAITH_KING]",
+    "[DEATH_PROPHET]",
+    "[PHANTOM_ASSASSIN]",
+    "[PUGNA]",
+    "[TEMPLAR_ASSASSIN]",
+    "[VIPER]",
+    "[LUNA]",
+    "[DRAGON_KNIGHT]",
+    "[DAZZLE]",
+    "[CLOCKWERK]",
+    "[LESHRAC]",
+    "[NATURE'S_PROPHET]",
+    "[LIFESTEALER]",
+    "[DARK_SEER]",
+    "[CLINKZ]",
+    "[OMNIKNIGHT]",
+    "[ENCHANTRESS]",
+    "[HUSKAR]",
+    "[NIGHT_STALKER]",
+    "[BROODMOTHER]",
+    "[BOUNTY_HUNTER]",
+    "[WEAVER]",
+    "[JAKIRO]",
+    "[BATRIDER]",
+    "[CHEN]",
+    "[SPECTRE]",
+    "[ANCIENT_APPARITION]",
+    "[DOOM]",
+    "[URSA]",
+    "[SPIRIT_BREAKER]",
+    "[GYROCOPTER]",
+    "[ALCHEMIST]",
+    "[INVOKER]",
+    "[SILENCER]",
+    "[OUTWORLD_DEVOURER]",
+    "[LYCAN]",
+    "[BREWMASTER]",
+    "[SHADOW_DEMON]",
+    "[LONE_DRUID]",
+    "[CHAOS_KNIGHT]",
+    "[MEEPO]",
+    "[TREANT_PROTECTOR]",
+    "[OGRE_MAGI]",
+    "[UNDYING]",
+    "[RUBICK]",
+    "[DISRUPTOR]",
+    "[NYX_ASSASSIN]",
+    "[NAGA_SIREN]",
+    "[KEEPER_OF_THE_LIGHT]",
+    "[IO]",
+    "[VISAGE]",
+    "[SLARK]",
+    "[MEDUSA]",
+    "[TROLL_WARLORD]",
+    "[CENTAUR_WARRUNNER]",
+    "[MAGNUS]",
+    "[TIMBERSAW]",
+    "[BRISTLEBACK]",
+    "[TUSK]",
+    "[SKYWRATH_MAGE]",
+    "[ABADDON]",
+    "[ELDER_TITAN]",
+    "[LEGION_COMMANDER]",
+    "[TECHIES]",
+    "[EMBER_SPIRIT]",
+    "[EARTH_SPIRIT]",
+    "[UNDERLORD]",
+    "[TERRORBLADE]",
+    "[PHOENIX]",
+    "[ORACLE]",
+    "[WINTER_WYVERN]",
+    "[ARC_WARDEN]",
+    "[MONKEY_KING]",
+    "[DARK_WILLOW]",
+    "[PANGOLIER]",
+    "[GRIMSTROKE]",
+    "[HOODWINK]",
+    "[VOID_SPIRIT]",
+    "[SNAPFIRE]",
+    "[MARS]",
+    "[RING_MASTER]",
+    "[DAWNBREAKER]",
+    "[MARCI]",
+    "[PRIMAL_BEAST]",
+    "[MUERTA]",
+    "[KEZ]",
+    "[NPC_DOTA_LONE_DRUID_BEAR4]"
+  ],
+  "bos_token": "<s>",
+  "clean_up_tokenization_spaces": false,
+  "cls_token": "<s>",
+  "eos_token": "</s>",
+  "errors": "replace",
+  "extra_special_tokens": {},
+  "mask_token": "<mask>",
+  "model_max_length": 512,
+  "pad_token": "<pad>",
+  "sep_token": "</s>",
+  "tokenizer_class": "RobertaTokenizer",
+  "trim_offsets": true,
+  "unk_token": "<unk>"
+}

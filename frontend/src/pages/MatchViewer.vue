@@ -4,8 +4,9 @@
       <v-col cols="12" sm="8" md="6">
         <v-card class="pa-6" elevation="10" rounded="xl">
           <v-text-field
-            v-model="gameId"
-            placeholder="Enter Match ID"
+            v-model="inputId"
+            @keyup.enter="handleSearch"
+            placeholder="Enter Match ID or Account ID"
             hide-details
             variant="outlined"
             density="comfortable"
@@ -16,10 +17,10 @@
             color="accent"
             block
             :loading="loading"
-            :disabled="!/^\d+$/.test(gameId.trim())"
-            @click="fetchMessages"
+            :disabled="!/^\d+$/.test(inputId.trim())"
+            @click="handleSearch"
           >
-            Scan Chat
+            Search
           </v-btn>
 
           <v-alert
@@ -52,45 +53,50 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router' // ✅ FIXED: Import useRouter
+import { useRouter } from 'vue-router'
 import axios from 'axios'
+const API_BASE = import.meta.env.VITE_API_BASE
 
-const router = useRouter() // ✅ FIXED: Create router instance
-const gameId = ref('')
+const router = useRouter()
+const inputId = ref('')
 const messages = ref([])
 const loading = ref(false)
 const error = ref(null)
 
-const fetchMessages = async () => {
-  const id = gameId.value.trim()
+const handleSearch = async () => {
+  const id = inputId.value.trim()
   if (!id) return
 
   loading.value = true
   error.value = null
 
   try {
-    const { data } = await axios.get(`https://api.opendota.com/api/matches/${id}`)
-
-    if (!data.match_id) {
-      throw new Error("Invalid match ID.")
+    // First try to treat it as account ID
+    await axios.get(`${API_BASE}/player-matches?account_id=${id}`)
+    console.log("Account ID found:", id)
+    router.push({ name: 'MyMatches', query: { account_id: id } })
+  } catch (accountErr) {
+    try {
+      // Then try match ID fallback
+      const { data } = await axios.get(`https://api.opendota.com/api/matches/${id}`)
+      if (data.error != undefined) {
+        throw new Error("Invalid match ID.")
+      }
+      console.log("data:", data)
+      const hasParsed = data.od_data.has_parsed
+      console.log("hasParsed:", hasParsed)
+      if (!hasParsed) {
+        console.log(await axios.get(`${API_BASE}/reparse-match?match_id=${data.match_id}`))
+      }
+      router.push({ name: 'MatchResults', params: { matchId: id } })
+    } catch (matchErr) {
+      error.value = matchErr.response?.data?.error || "Failed to fetch match data."
+      if (error.value === "Not Found") {
+        error.value = "Player or Match ID not valid"
+      }
     }
-
-    const hasParsed = data?.od_data?.has_parsed
-
-    if (!hasParsed) {
-      throw new Error("This match has not been parsed yet. Please wait and try again later.")
-    }
-
-    // ✅ Valid and parsed — go to results
-    router.push({ name: 'MatchResults', params: { matchId: id } })
-
-  } catch (err) {
-    error.value = err.message || 'Invalid or unavailable match ID.'
-    console.error("Validation failed:", err)
   } finally {
     loading.value = false
   }
 }
-
-
 </script>

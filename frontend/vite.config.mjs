@@ -11,6 +11,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/NoToxic/',
   plugins: [
     VueRouter(),
     Vue({
@@ -42,7 +43,9 @@ export default defineConfig({
       'unplugin-vue-router/data-loaders/basic',
     ],
   },
-  define: { 'process.env': {} },
+  define: {
+    'process.env.VITE_API_BASE': JSON.stringify(process.env.VITE_API_BASE),
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -58,7 +61,8 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    host: "127.0.0.1", // ✅ use same IP as backend to match cookie domain
+    port: 3000,         // ✅ already correct
   },
   css: {
     preprocessorOptions: {

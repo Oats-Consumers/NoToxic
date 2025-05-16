@@ -10,6 +10,7 @@ import time
 import re
 import atexit
 from utils.language_check import is_english, save_cache
+from my_secrets import OPENDOTA_API_KEY
 atexit.register(save_cache)
 
 # Precompiled regex to detect private-use Unicode (e.g., emojis like \ue128)
@@ -21,28 +22,6 @@ def fetch_match_data(match_id):
         return OPEN_DOTA_CLIENT.get_match_details(match_id)
     except requests.RequestException as e:
         print(f"Error fetching match data: {e}")
-        return None
-
-def fetch_recent_matches(account_id):
-    url = f"https://api.opendota.com/api/players/{account_id}/recentMatches?api_key={OPENDOTA_API_KEY}"
-    try:
-        response = requests.get(url)
-        #print(response.json())
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error fetching recent matches: {e}")
-        return None
-
-def fetch_player(account_id):
-    url = f"https://api.opendota.com/api/players/{account_id}?api_key={OPENDOTA_API_KEY}"
-    try:
-        response = requests.get(url)
-        #print(response.json())
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error fetching recent matches: {e}")
         return None
 
 def request_reparse(match_id):
@@ -105,7 +84,7 @@ def is_valid_message(msg, chatwheel):
 
     # Filter out non-English messages using GPT + cache
     if not is_english(key.strip()):
-        print(f"🌐 Skipping non-English message: {key}")
+        print(f"🌐 Skipping non-English message, Jose: {key}")
         return False
 
     return True
@@ -217,9 +196,9 @@ def get_context_for_chat_message(index, chat_log, match_data, hero_names, npc_na
         "radiant_xp_adv": xp_adv,
         "is_chatwheel": is_chatwheel_message(message, chatwheel),
     }
+hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
 
 if __name__ == "__main__":
-    hero_names, npc_names, npc_to_id = load_hero_data("data/heroes.json")
     chatwheel_data = load_chatwheel_data("data/chat_wheel.json")
     match_id = input("Enter Dota 2 match ID: ")
 

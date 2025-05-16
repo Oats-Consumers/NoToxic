@@ -11,47 +11,41 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
 from utils import jsonl_to_model_input_converter
+from utils import split_labeled_dataset_by_section
+from utils import SPECIAL_TOKENS
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_INPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match.jsonl")
 DEFAULT_OUTPUT = os.path.join(SCRIPT_DIR, "..", "matches", "saved_match_output.jsonl")
-MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best-s-nlp-roberta-toxicity-classifier-split")
+MODEL_PATH = os.path.join(SCRIPT_DIR, "..", "training", "models", "best-SkolkovoInstitute-roberta-toxicity-classifier-tokenized")
 
-def label_match(input_path, output_path):
+def label_match(input_path):
+    print(f"Input path: {input_path}")
     with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as temp_csv:
         temp_csv_path = temp_csv.name
 
-    jsonl_to_model_input_converter.process_jsonl_to_csv(input_path, temp_csv_path, False)
+    split_labeled_dataset_by_section.process_jsonl_to_csv(input_path, temp_csv_path, False)
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+    tokenizer.add_special_tokens({'additional_special_tokens': SPECIAL_TOKENS})
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
-
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    classifier = pipeline("text-classification", model=model, tokenizer=tokenizer, device=device)
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
+    pipeline("text-classification", model=model, tokenizer=tokenizer, device=device)
 
     labeled_output = []
     with open(temp_csv_path, "r", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            context = row["context"]
-            message = row["message"]
+            input_text = row["input_text"]
 
             inputs = tokenizer(
-                message,
-                context,
+                input_text,
                 truncation=True,
                 padding=True,
                 max_length=512,
                 return_tensors="pt"
             ).to(device)
-
-            # Decode input_ids back to tokens
-            # print("\n--- TOKENIZED MESSAGE+CONTEXT INPUT ---")
-            # print("Tokens:", tokenizer.convert_ids_to_tokens(inputs['input_ids'][0]))
-            # print("Decoded text:", tokenizer.decode(inputs['input_ids'][0], skip_special_tokens=True))
-            # print("Attention mask:", inputs['attention_mask'][0])
-            # print("Input length:", inputs['input_ids'].shape[1])
 
             with torch.no_grad():
                 outputs = model(**inputs)
@@ -61,20 +55,22 @@ def label_match(input_path, output_path):
                 confidence = scores[label_id].item()
 
             labeled_output.append({
-                "message": message,
-                "context": context,
                 "label": label,
                 "confidence": confidence
             })
 
-    with open(output_path, "w", encoding="utf-8") as out_file:
-        for item in labeled_output:
-            out_file.write(json.dumps(item) + "\n")
-
-    # Clean up temp file
     os.remove(temp_csv_path)
-    print(f"Labeled output written to {output_path}")
-
+    return labeled_output
+    
+def predict_toxicity(contexts):
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_json:
+        temp_json_path = temp_json.name
+    with open(temp_json_path, "w") as json_file:
+        json.dump(contexts, json_file, indent=4)
+    print(f"Contexts saved to {temp_json_path}")
+    labeled_output = label_match(temp_json_path)
+    os.remove(temp_json_path)
+    return labeled_output
 
 if __name__ == "__main__":
     curr = sys.path.append("..")

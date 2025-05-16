@@ -1,36 +1,50 @@
 {
-  "bert-base-uncased-split": {
-    "f1": 0.7279693486590039,
-    "precision": 0.6785714285714286,
-    "recall": 0.785124,
-    "accuracy": 0.722656
+  "s-nlp-roberta-toxicity-classifier-tokenized": {
+    "f1": 0.8289592760180996,
+    "precision": 0.8450184501845018,
+    "recall": 0.8134991119005328,
+    "accuracy": 0.8201712654614652
   },
-  "bert-base-uncased-message_only": {
-    "f1": 0.7854251012145749,
-    "precision": 0.8083333333333333,
-    "recall": 0.76378,
-    "accuracy": 0.792969
+  "roberta-base-tokenized": {
+    "f1": 0.8268359020852222,
+    "precision": 0.8444444444444444,
+    "recall": 0.8099467140319716,
+    "accuracy": 0.8182683158896289
   },
-  "bert-large-uncased-split": {
-    "f1": 0.7555555555555555,
-    "precision": 0.7183098591549296,
-    "recall": 0.785124,
-    "accuracy": 0.722656
+  "roberta-large-tokenized": {
+    "f1": 0.8426763110307414,
+    "precision": 0.858195211786372,
+    "recall": 0.827708703374778,
+    "accuracy": 0.8344433872502379
   },
-  "bert-large-uncased-message_only": {
-    "f1": 0.0,
-    "precision": 0.0
+  "microsoft-deberta-v3-base-tokenized": {
+    "f1": 0.8352422907488987,
+    "precision": 0.8286713286713286,
+    "recall": 0.8419182948490231,
+    "accuracy": 0.8220742150333016
   },
-  "s-nlp-roberta-toxicity-classifier-split": {
-    "f1": 0.7935222672064778,
-    "precision": 0.7967479674796748,
-    "recall": 0.790323,
-    "accuracy": 0.800781
+  "bert-large-uncased-tokenized": {
+    "f1": 0.8360797918473547,
+    "precision": 0.8169491525423729,
+    "recall": 0.8561278863232682,
+    "accuracy": 0.8201712654614652
   },
-  "s-nlp-roberta-toxicity-classifier-message_only": {
-    "f1": 0.7878787878787878,
-    "precision": 0.7591240875912408,
-    "recall": 0.8188976377952756,
-    "accuracy": 0.78125
+  "bert-base-multilingual-cased-tokenized": {
+    "f1": 0.8161434977578476,
+    "precision": 0.8242753623188406,
+    "recall": 0.8081705150976909,
+    "accuracy": 0.8049476688867745
+  },
+  "microsoft-deberta-v3-small-tokenized": {
+    "f1": 0.8354203935599285,
+    "precision": 0.8414414414414414,
+    "recall": 0.8294849023090586,
+    "accuracy": 0.8249286393910561
+  },
+  "SkolkovoInstitute-roberta-toxicity-classifier-tokenized": {
+    "f1": 0.8493392070484581,
+    "precision": 0.8426573426573427,
+    "recall": 0.8561278863232682,
+    "accuracy": 0.8372978116079924
   }
 }
