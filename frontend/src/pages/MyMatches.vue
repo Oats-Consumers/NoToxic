@@ -126,8 +126,8 @@ const loadMatches = async () => {
     loading.value = true
     const offset = (currentPage.value - 1) * pageSize
     const url = accountId.value
-      ? `http://127.0.0.1:5000/player-recentmatches?account_id=${accountId.value}&offset=${offset}`
-      : `http://127.0.0.1:5000/player-recentmatches?offset=${offset}`
+      ? `http://127.0.0.1:5000/player-matches?account_id=${accountId.value}&offset=${offset}`
+      : `http://127.0.0.1:5000/player-matches?offset=${offset}`
 
     const playerRes = await axios.get(url, { withCredentials: true })
     matches.value = playerRes.data.matches
