@@ -4,6 +4,7 @@ import re
 from flask import Flask, redirect, request, session, url_for, jsonify
 from openid.consumer.consumer import Consumer, SUCCESS
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Set up path and secrets
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -18,16 +19,23 @@ from backend.request_handler import (
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
 
+# ✅ Fix reverse proxy detection
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
 # Flask session cookie settings
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # or "None" if using HTTPS
-app.config["SESSION_COOKIE_SECURE"] = False    # set to True only if HTTPS
+app.config.update(
+    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SECURE=True,
+    PREFERRED_URL_SCHEME="https"
+)
 
-# CORS configuration
-CORS(app, supports_credentials=True, origins=[FRONTEND_ORIGIN])
-
-# In-memory store for Steam OpenID session (instead of full session store)
-store = None
-temp_openid_session = {}
+# CORS config (adjust as needed for prod)
+CORS(app, supports_credentials=True, origins=[
+    "https://oats-consumers.github.io",
+    "https://oats-consumers.github.io/NoToxic",  # optional
+    "http://127.0.0.1:3000",
+    "http://localhost:3000"
+])
 
 # Routes
 
@@ -39,26 +47,41 @@ def index():
 
 @app.route("/login")
 def login():
-    consumer = Consumer(temp_openid_session, store)
+    # 🔄 Use fresh memory-backed OpenID store
+    consumer = Consumer({}, None)
     auth_request = consumer.begin("https://steamcommunity.com/openid")
+
+    PUBLIC_BASE_URL = "https://30dlqduz990x74-5000.proxy.runpod.net"
+
     return redirect(auth_request.redirectURL(
-        realm=request.url_root,
-        return_to=url_for("authorize", _external=True)
+        realm=PUBLIC_BASE_URL,
+        return_to=f"{PUBLIC_BASE_URL}/authorize"
     ))
 
 @app.route("/authorize")
 def authorize():
-    consumer = Consumer(temp_openid_session, store)
+    consumer = Consumer({}, None)
     response = consumer.complete(dict(request.args), request.url)
 
+    print("🔥 Reached /authorize")
+    print("📥 request.url:", request.url)
+    print("📥 openid.return_to:", request.args.get("openid.return_to"))
+    print("📥 response.status:", response.status)
+
     if response.status == SUCCESS:
-        match = re.search(r"\d+$", response.getDisplayIdentifier())
+        identifier = response.getDisplayIdentifier()
+        print("✅ Identifier:", identifier)
+        match = re.search(r"\d+$", identifier)
         if match:
             steam_id = match.group()
             session["steam_id"] = steam_id
+            print("✅ Login success — steam_id:", steam_id)
             return redirect(FRONTEND_ORIGIN)
+        print("❌ Could not extract Steam ID from identifier:", identifier)
         return "❌ Failed to extract Steam ID.", 400
-    return "❌ Login failed."
+
+    print("❌ OpenID login failed.")
+    return "❌ Login failed.", 401
 
 @app.route("/logout")
 def logout():

@@ -31,6 +31,7 @@ git lfs pull
 apt update && apt install -y tmux
 mkdir -p /workspace/bin /workspace/lib
 cp $(which tmux) /workspace/bin/
+chmod +x /workspace/bin/tmux
 ldd $(which tmux) | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' /workspace/lib/
 ```
 
