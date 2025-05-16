@@ -130,7 +130,7 @@ const loadMatches = async () => {
       ? `${API_BASE}/player-matches?account_id=${accountId.value}&offset=${offset}`
       : `${API_BASE}/player-matches?offset=${offset}`
 
-    const playerRes = await axios.get(url, { withCredentials: true })
+    const playerRes = await axios.get(url)
     matches.value = playerRes.data.matches
     playerName.value = playerRes.data.player?.profile?.personaname || 'You'
   } catch (err) {
@@ -146,7 +146,7 @@ const loadTotalPages = async () => {
       ? `${API_BASE}/win-lose-amount?account_id=${accountId.value}`
       : `${API_BASE}/win-lose-amount`
 
-    const res = await axios.get(url, { withCredentials: true })
+    const res = await axios.get(url)
     const totalMatches = res.data.win + res.data.lose
     totalPages.value = Math.ceil(totalMatches / pageSize)
     console.log("res:", res)
@@ -162,7 +162,7 @@ onMounted(async () => {
   await loadTotalPages()
   await loadMatches()
 
-  const heroRes = await fetch('/NoToxic/heroes.json')
+  const heroRes = await fetch(`${import.meta.env.BASE_URL}heroes.json`)
   const heroData = await heroRes.json()
   for (const hero of Object.values(heroData)) {
     heroImageMap.value[hero.id] = `https://cdn.cloudflare.steamstatic.com${hero.img}`

@@ -5,6 +5,7 @@
         <v-card class="pa-6" elevation="10" rounded="xl">
           <v-text-field
             v-model="inputId"
+            @keyup.enter="handleSearch"
             placeholder="Enter Match ID or Account ID"
             hide-details
             variant="outlined"
@@ -71,7 +72,7 @@ const handleSearch = async () => {
 
   try {
     // First try to treat it as account ID
-    await axios.get(`${API_BASE}/player-matches?account_id=${id}`, { withCredentials: true })
+    await axios.get(`${API_BASE}/player-matches?account_id=${id}`)
     console.log("Account ID found:", id)
     router.push({ name: 'MyMatches', query: { account_id: id } })
   } catch (accountErr) {

@@ -44,43 +44,4 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 const API_BASE = import.meta.env.VITE_API_BASE
-
-const loggedIn = ref(false)
-
-onMounted(async () => {
-  try {
-    const res = await axios.get(`${API_BASE}/check-login`, {
-      withCredentials: true // ✅ send session cookie
-    })
-    if (res.data.loggedIn) {
-      loggedIn.value = true
-    }
-  } catch (err) {
-    loggedIn.value = false
-  }
-})
-
-const logout = async () => {
-  try {
-    await axios.get(`${API_BASE}/logout`, {
-      withCredentials: true,
-    })
-    loggedIn.value = false
-    window.location.href = "/" // optional: refresh or redirect
-  } catch (e) {
-    console.error("Logout failed:", e)
-  }
-}
-
-
-const loginWithSteam = () => {
-  window.location.href = `${API_BASE}/login`
-}
-
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
-const goToMyMatches = () => {
-  window.location.href = '/my-matches'
-}
 </script>
