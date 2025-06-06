@@ -8,17 +8,17 @@ A concise overview of our work on detecting toxic language in Dota 2 chat.
 - **Labeling**:  
   1. Prompted the OpenAI API (ChatGPT‐style) to pre‐label “TOXIC” vs. “NON‐TOXIC.”  
   2. Manually reviewed ~20 % of those labels to correct edge cases.
-- **Final Split**: 10 000 messages (5 400 TOXIC, 4 600 NON‐TOXIC), with an 80 / 10 / 10 train/val/test split. We also retained up to two preceding lines as context for each target message.
+- **Final Split**: 10 000 messages (5 400 TOXIC, 4 600 NON‐TOXIC).
 
 ## Models
 - **RoBERTa base (cased)**  
-  - **Baseline** (single‐message): F1 ≈ 0.87 (no context).  
-  - **Contextual Version**: Included two previous messages in the input; applied label smoothing (ϵ = 0.1), dynamic token masking, and stratified batch sampling.  
+  - **Baseline** (single‐message): F1 ≈ 0.78 (no context).  
+  - **Contextual Version**: Included previous messages in the input, gold/exp advantages of the team, heroes of the players, time when message was send, who send the message and the message itself. 
   - **Results (test split)**:  
-    - Precision (Toxic): 0.93  
-    - Recall (Toxic): 0.91  
-    - **F1-score: 0.92**
+    - Precision (Toxic): 0.84  
+    - Recall (Toxic): 0.855
+    - **F1-score: 0.85**
 
 ## 📝 Presentation
 For detailed methodology, sample prompts, hyperparameters, metrics breakdown, and plots, please refer to our full slide deck:
-[View the Presentation](https://docs.google.com/presentation/d/1i_apdbjdXuyAdbNkS0eOnOCtx8_fs4Jz/edit?usp=sharing&ouid=110563569340235059001&rtpof=true&sd=true)
+[View the Presentation](https://docs.google.com/presentation/d/1i_apdbjdXuyAdbNkS0eOnOCtx8_fs4z/edit?usp=sharing&ouid=110563569340235059001&rtpof=true&sd=true)
