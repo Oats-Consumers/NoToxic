@@ -21,4 +21,4 @@ A concise overview of our work on detecting toxic language in Dota 2 chat.
 
 ## 📝 Presentation
 For detailed methodology, sample prompts, hyperparameters, metrics breakdown, and plots, please refer to our full slide deck:
-[View the Presentation](https://docs.google.com/presentation/d/1i_apdbjdXuyAdbNkS0eOnOCtx8_fs4z/edit?usp=sharing&ouid=110563569340235059001&rtpof=true&sd=true)
+[View the Presentation](https://docs.google.com/presentation/d/1i_apdbjdXuyAdbNkS0eOnOCtx8_fs4Jz/edit?usp=sharing&ouid=110563569340235059001&rtpof=true&sd=true)
